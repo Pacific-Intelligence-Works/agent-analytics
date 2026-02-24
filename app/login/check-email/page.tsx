@@ -1,14 +1,22 @@
 import { Mail } from "lucide-react";
+import Image from "next/image";
 
 export default function CheckEmailPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-950">
+    <div className="flex min-h-screen items-center justify-center bg-white">
       <div className="w-full max-w-md space-y-6 px-4 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-indigo-500/10">
-          <Mail className="h-8 w-8 text-indigo-400" />
+        <Image
+          src="/logo_w_text.svg"
+          alt="Unusual"
+          width={120}
+          height={22}
+          className="mx-auto mb-4"
+        />
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50">
+          <Mail className="h-8 w-8 text-indigo-500" />
         </div>
-        <h1 className="text-2xl font-bold text-white">Check your email</h1>
-        <p className="text-gray-400">
+        <h1 className="text-2xl font-bold text-gray-900">Check your email</h1>
+        <p className="text-gray-500">
           We sent a magic link to your email address. Click the link to sign in.
         </p>
       </div>

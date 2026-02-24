@@ -20,6 +20,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Resend({
       apiKey: process.env.RESEND_API_KEY,
       from: "Agent Analytics <noreply@analytics.unusual.ai>",
+      async sendVerificationRequest({ identifier: email, url }) {
+        const { Resend: ResendClient } = await import("resend");
+        const resend = new ResendClient(process.env.RESEND_API_KEY);
+
+        await resend.emails.send({
+          from: "Agent Analytics <noreply@analytics.unusual.ai>",
+          to: email,
+          subject: "Sign into Agent Analytics",
+          html: `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
+              <p style="font-size: 14px; color: #6b7280; margin-bottom: 24px;">Agent Analytics</p>
+              <h1 style="font-size: 24px; color: #111827; margin-bottom: 16px;">Sign in to Agent Analytics</h1>
+              <p style="font-size: 16px; color: #374151; line-height: 1.5; margin-bottom: 32px;">
+                Agent Analytics monitors when AI agents like ChatGPT, Claude, and Perplexity read your website. Click below to sign in.
+              </p>
+              <a href="${url}" style="display: inline-block; background-color: #111827; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 500;">
+                Sign in
+              </a>
+              <p style="font-size: 13px; color: #9ca3af; margin-top: 32px;">
+                If you didn't request this email, you can safely ignore it.
+              </p>
+              <p style="font-size: 12px; color: #d1d5db; margin-top: 24px;">
+                By Unusual
+              </p>
+            </div>
+          `,
+        });
+      },
     }),
   ],
   pages: {

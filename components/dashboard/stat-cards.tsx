@@ -71,15 +71,15 @@ export function StatCards({
         return (
           <div
             key={stat.key}
-            className="rounded-xl border border-gray-800 bg-gray-900/50 p-4"
+            className="rounded-xl border border-gray-200 bg-white p-4"
           >
             <div className="mb-2 flex items-center gap-2">
-              <Icon className="h-4 w-4 text-gray-500" />
-              <span className="text-xs font-medium text-gray-500">
+              <Icon className="h-4 w-4 text-gray-400" />
+              <span className="text-xs font-medium text-gray-400">
                 {stat.label}
               </span>
             </div>
-            <div className="text-2xl font-semibold text-white">
+            <div className="text-2xl font-semibold text-gray-900">
               {stat.key === "synced"
                 ? stat.format(0, lastSyncedAt)
                 : stat.format(values[stat.key])}

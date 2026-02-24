@@ -9,6 +9,7 @@ import {
 import { StatCards } from "@/components/dashboard/stat-cards";
 import { TrafficChart } from "@/components/dashboard/traffic-chart";
 import { BotBreakdown } from "@/components/dashboard/bot-breakdown";
+import { AgentBreakdown } from "@/components/dashboard/agent-breakdown";
 import { TopPathsTable } from "@/components/dashboard/top-paths-table";
 import { PageTrafficChart } from "@/components/dashboard/page-traffic-chart";
 import { DashboardActions } from "@/components/dashboard/dashboard-actions";
@@ -57,8 +58,16 @@ export default async function AccountDashboardPage({
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">{account.domain}</h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`https://www.google.com/s2/favicons?domain=${account.domain}&sz=32`}
+                alt=""
+                className="h-5 w-5 rounded"
+              />
+              <h1 className="text-2xl font-bold text-gray-900">{account.domain}</h1>
+            </div>
+            <p className="mt-1 text-sm text-gray-400">
               AI agent traffic — last {days} days
             </p>
           </div>
@@ -67,7 +76,7 @@ export default async function AccountDashboardPage({
 
         {/* Sync error banner */}
         {account.connection?.syncError && (
-          <div className="rounded-lg border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-300">
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             Sync error: {account.connection.syncError}
           </div>
         )}
@@ -81,10 +90,10 @@ export default async function AccountDashboardPage({
         />
 
         {snapshots.length === 0 ? (
-          <div className="flex h-64 items-center justify-center rounded-xl border border-gray-800 bg-gray-900/50">
+          <div className="flex h-64 items-center justify-center rounded-xl border border-gray-200 bg-white">
             <div className="text-center">
-              <p className="text-gray-400">No AI agent traffic data yet</p>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="text-gray-500">No AI agent traffic data yet</p>
+              <p className="mt-1 text-sm text-gray-400">
                 Click &quot;Sync now&quot; to fetch the latest data from
                 Cloudflare.
               </p>
@@ -95,11 +104,13 @@ export default async function AccountDashboardPage({
             {/* Agent traffic over time */}
             <TrafficChart snapshots={snapshots} days={days} />
 
-            {/* Agent breakdown + Top paths */}
+            {/* Agent breakdown + Org breakdown + Top paths */}
             <div className="grid gap-6 lg:grid-cols-2">
               <BotBreakdown snapshots={snapshots} />
-              <TopPathsTable paths={paths} accountId={accountId} days={days} />
+              <AgentBreakdown snapshots={snapshots} />
             </div>
+
+            <TopPathsTable paths={paths} accountId={accountId} days={days} />
 
             {/* Page-level traffic over time */}
             <PageTrafficChart data={pathTimeSeries} days={days} />

@@ -27,7 +27,7 @@ export default async function DashboardLayout({
     : [];
 
   return (
-    <div className="flex h-screen bg-gray-950">
+    <div className="flex h-screen bg-gray-50">
       <Sidebar user={session.user} accounts={userAccounts} />
       <main className="flex-1 overflow-auto p-6">{children}</main>
     </div>

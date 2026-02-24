@@ -1,9 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { accounts } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { syncAccount } from "@/lib/cloudflare/sync";
+
+// Allow up to 5 minutes for background sync on Vercel Pro
+export const maxDuration = 300;
 
 export async function POST(
   request: Request,
@@ -38,16 +41,14 @@ export async function POST(
     // No body or invalid JSON — use default 30
   }
 
-  try {
-    const result = await syncAccount(accountId, lookbackDays);
-    return NextResponse.json({ success: true, ...result });
-  } catch (err) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: err instanceof Error ? err.message : "Sync failed",
-      },
-      { status: 500 }
-    );
-  }
+  // Fire-and-forget: return immediately, run sync in background
+  after(async () => {
+    try {
+      await syncAccount(accountId, lookbackDays);
+    } catch {
+      // Error is recorded on the connection by syncAccount itself
+    }
+  });
+
+  return NextResponse.json({ success: true, message: "Sync started" });
 }

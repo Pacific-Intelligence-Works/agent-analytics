@@ -27,18 +27,18 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="relative max-h-[80vh] w-full max-w-lg overflow-auto rounded-xl border border-gray-700 bg-gray-900 shadow-2xl">
+      <div className="relative max-h-[80vh] w-full max-w-lg overflow-auto rounded-xl border border-gray-200 bg-white shadow-2xl">
         {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-700 bg-gray-900 px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Settings</h2>
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
+          <h2 className="text-lg font-semibold text-gray-900">Settings</h2>
           <button
             onClick={onClose}
-            className="rounded-lg p-1 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+            className="rounded-lg p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-900"
           >
             <X className="h-5 w-5" />
           </button>
@@ -48,21 +48,21 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         <div className="px-6 py-4">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-medium text-gray-300">AI Agents</h3>
-              <p className="mt-0.5 text-xs text-gray-500">
+              <h3 className="text-sm font-medium text-gray-700">AI Agents</h3>
+              <p className="mt-0.5 text-xs text-gray-400">
                 Toggle which agents appear in your dashboard charts and tables.
               </p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={enableAll}
-                className="rounded px-2 py-1 text-xs text-indigo-400 transition-colors hover:bg-gray-800"
+                className="rounded px-2 py-1 text-xs text-indigo-600 transition-colors hover:bg-gray-100"
               >
                 Enable all
               </button>
               <button
                 onClick={disableAll}
-                className="rounded px-2 py-1 text-xs text-gray-400 transition-colors hover:bg-gray-800"
+                className="rounded px-2 py-1 text-xs text-gray-500 transition-colors hover:bg-gray-100"
               >
                 Disable all
               </button>
@@ -79,7 +79,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                       backgroundColor: ORG_COLORS[org] || "#a855f7",
                     }}
                   />
-                  <span className="text-sm font-medium text-gray-300">
+                  <span className="text-sm font-medium text-gray-700">
                     {org}
                   </span>
                 </div>
@@ -87,19 +87,19 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   {agents.map((agent) => (
                     <label
                       key={agent.ua}
-                      className="flex cursor-pointer items-start gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-800/50"
+                      className="flex cursor-pointer items-start gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-gray-50"
                     >
                       <input
                         type="checkbox"
                         checked={!disabledAgents.has(agent.ua)}
                         onChange={() => toggleAgent(agent.ua)}
-                        className="mt-0.5 h-4 w-4 rounded border-gray-600 bg-gray-800 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
+                        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
                       />
                       <div className="min-w-0 flex-1">
-                        <span className="font-mono text-xs text-gray-200">
+                        <span className="font-mono text-xs text-gray-800">
                           {agent.ua}
                         </span>
-                        <p className="mt-0.5 text-xs leading-relaxed text-gray-500">
+                        <p className="mt-0.5 text-xs leading-relaxed text-gray-400">
                           {agent.description}
                         </p>
                       </div>

@@ -21,14 +21,14 @@ export function DashboardActions({ accountId, days }: DashboardActionsProps) {
         <SyncButton accountId={accountId} />
         <a
           href={`/api/accounts/${accountId}/export?format=csv`}
-          className="flex items-center gap-2 rounded-lg border border-gray-700 px-3 py-1.5 text-sm text-gray-300 transition-colors hover:bg-gray-800"
+          className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100"
         >
           <Download className="h-3.5 w-3.5" />
           Export
         </a>
         <button
           onClick={() => setSettingsOpen(true)}
-          className="flex items-center gap-2 rounded-lg border border-gray-700 px-3 py-1.5 text-sm text-gray-300 transition-colors hover:bg-gray-800"
+          className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100"
         >
           <Settings className="h-3.5 w-3.5" />
         </button>

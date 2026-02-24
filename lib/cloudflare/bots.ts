@@ -113,46 +113,6 @@ export const AI_AGENTS: AgentInfo[] = [
     description:
       "Apple's crawler used by Siri, Spotlight, and Apple Intelligence to index and summarize web content.",
   },
-  // Amazon
-  {
-    ua: "Amazonbot",
-    org: "Amazon",
-    category: "ai_crawler",
-    description:
-      "Amazon's crawler that indexes web content for Alexa answers and Amazon's AI-powered search features.",
-  },
-  // ByteDance
-  {
-    ua: "Bytespider",
-    org: "ByteDance",
-    category: "ai_crawler",
-    description:
-      "ByteDance's crawler that indexes web content for TikTok search and other ByteDance AI products.",
-  },
-  // Common Crawl
-  {
-    ua: "CCBot",
-    org: "Common Crawl",
-    category: "ai_crawler",
-    description:
-      "Common Crawl's open web crawler. Its dataset is widely used for training large language models.",
-  },
-  // Diffbot
-  {
-    ua: "Diffbot",
-    org: "Diffbot",
-    category: "ai_crawler",
-    description:
-      "Diffbot's web scraping crawler that builds structured knowledge graphs used by various AI applications.",
-  },
-  // DuckDuckGo
-  {
-    ua: "DuckAssistBot",
-    org: "DuckDuckGo",
-    category: "ai_search",
-    description:
-      "DuckDuckGo's AI assistant bot that fetches web content to generate DuckAssist instant answers.",
-  },
 ];
 
 /** Org → color mapping for charts */
@@ -165,11 +125,6 @@ export const ORG_COLORS: Record<string, string> = {
   Meta: "#6366f1",
   Mistral: "#ec4899",
   Apple: "#6b7280",
-  Amazon: "#f97316",
-  ByteDance: "#ef4444",
-  "Common Crawl": "#14b8a6",
-  Diffbot: "#64748b",
-  DuckDuckGo: "#22d3ee",
 };
 
 /** Agent name → color mapping for per-agent charts */
@@ -188,11 +143,6 @@ export const AGENT_COLORS: Record<string, string> = {
   "Meta-ExternalAgent": "#6366f1",
   "MistralAI-User": "#ec4899",
   Applebot: "#6b7280",
-  Amazonbot: "#f97316",
-  Bytespider: "#ef4444",
-  CCBot: "#14b8a6",
-  Diffbot: "#64748b",
-  DuckAssistBot: "#22d3ee",
 };
 
 /** Match a raw user-agent string to a known agent */

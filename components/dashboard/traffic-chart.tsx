@@ -66,23 +66,23 @@ export function TrafficChart({ snapshots, days }: TrafficChartProps) {
 
   if (filtered.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center rounded-xl border border-gray-800 bg-gray-900/50">
-        <p className="text-sm text-gray-500">No agent traffic data yet</p>
+      <div className="flex h-64 items-center justify-center rounded-xl border border-gray-200 bg-white">
+        <p className="text-sm text-gray-400">No agent traffic data yet</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-4">
-      <h3 className="mb-4 text-sm font-medium text-gray-400">
+    <div className="rounded-xl border border-gray-200 bg-white p-4">
+      <h3 className="mb-4 text-sm font-medium text-gray-500">
         AI Agent Traffic Over Time
       </h3>
       <ResponsiveContainer width="100%" height={320}>
         <AreaChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
           <XAxis
             dataKey="date"
-            stroke="#6b7280"
+            stroke="#9ca3af"
             fontSize={12}
             tickFormatter={(v) =>
               new Date(String(v) + "T00:00:00").toLocaleDateString("en-US", {
@@ -91,11 +91,11 @@ export function TrafficChart({ snapshots, days }: TrafficChartProps) {
               })
             }
           />
-          <YAxis stroke="#6b7280" fontSize={12} />
+          <YAxis stroke="#9ca3af" fontSize={12} />
           <Tooltip
             contentStyle={{
-              backgroundColor: "#111827",
-              border: "1px solid #374151",
+              backgroundColor: "#ffffff",
+              border: "1px solid #e5e7eb",
               borderRadius: "8px",
               fontSize: "12px",
             }}
@@ -107,7 +107,7 @@ export function TrafficChart({ snapshots, days }: TrafficChartProps) {
               })
             }
           />
-          <Legend wrapperStyle={{ fontSize: "12px", color: "#9ca3af" }} />
+          <Legend wrapperStyle={{ fontSize: "12px", color: "#6b7280" }} />
           {sortedOrgs.map((org) => (
             <Area
               key={org}

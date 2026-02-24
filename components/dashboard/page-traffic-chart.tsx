@@ -33,7 +33,7 @@ interface PageTrafficChartProps {
 function displayPath(path: string, maxLen: number = 30): string {
   if (path === "/") return "Homepage (/)";
   if (path.length <= maxLen) return path;
-  return path.slice(0, maxLen - 1) + "…";
+  return path.slice(0, maxLen - 1) + "\u2026";
 }
 
 /** Generate every YYYY-MM-DD string for the last N days */
@@ -50,8 +50,8 @@ function generateDateRange(days: number): string[] {
 export function PageTrafficChart({ data, days }: PageTrafficChartProps) {
   if (data.length === 0) {
     return (
-      <div className="flex h-64 items-center justify-center rounded-xl border border-gray-800 bg-gray-900/50">
-        <p className="text-sm text-gray-500">No page-level traffic data yet</p>
+      <div className="flex h-64 items-center justify-center rounded-xl border border-gray-200 bg-white">
+        <p className="text-sm text-gray-400">No page-level traffic data yet</p>
       </div>
     );
   }
@@ -78,18 +78,18 @@ export function PageTrafficChart({ data, days }: PageTrafficChartProps) {
   const chartData = allDates.map((date) => byDate.get(date) || { date });
 
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-4">
+    <div className="rounded-xl border border-gray-200 bg-white p-4">
       <div className="mb-4">
-        <h3 className="text-sm font-medium text-gray-400">
+        <h3 className="text-sm font-medium text-gray-500">
           Top Pages Crawled Over Time
         </h3>
       </div>
       <ResponsiveContainer width="100%" height={360}>
         <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
           <XAxis
             dataKey="date"
-            stroke="#6b7280"
+            stroke="#9ca3af"
             fontSize={12}
             tickFormatter={(v) =>
               new Date(String(v) + "T00:00:00").toLocaleDateString("en-US", {
@@ -98,11 +98,11 @@ export function PageTrafficChart({ data, days }: PageTrafficChartProps) {
               })
             }
           />
-          <YAxis stroke="#6b7280" fontSize={12} />
+          <YAxis stroke="#9ca3af" fontSize={12} />
           <Tooltip
             contentStyle={{
-              backgroundColor: "#111827",
-              border: "1px solid #374151",
+              backgroundColor: "#ffffff",
+              border: "1px solid #e5e7eb",
               borderRadius: "8px",
               fontSize: "11px",
               maxWidth: "400px",
@@ -116,7 +116,7 @@ export function PageTrafficChart({ data, days }: PageTrafficChartProps) {
             }
           />
           <Legend
-            wrapperStyle={{ fontSize: "11px", color: "#9ca3af" }}
+            wrapperStyle={{ fontSize: "11px", color: "#6b7280" }}
             formatter={(value) => displayPath(String(value))}
           />
           {paths.map((path, i) => (

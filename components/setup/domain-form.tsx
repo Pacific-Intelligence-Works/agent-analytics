@@ -44,20 +44,20 @@ export function DomainForm() {
     <form onSubmit={handleSubmit} className="w-full max-w-md">
       <label
         htmlFor="domain"
-        className="mb-2 block text-sm font-medium text-gray-300"
+        className="mb-2 block text-sm font-medium text-gray-700"
       >
         Enter your domain
       </label>
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+          <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input
             id="domain"
             type="text"
             value={domain}
             onChange={(e) => setDomain(e.target.value)}
             placeholder="example.com"
-            className="w-full rounded-lg border border-gray-700 bg-gray-800 py-2.5 pl-10 pr-4 text-sm text-white placeholder-gray-500 outline-none transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
             disabled={isLoading}
           />
         </div>
@@ -76,7 +76,7 @@ export function DomainForm() {
           )}
         </button>
       </div>
-      {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
     </form>
   );
 }

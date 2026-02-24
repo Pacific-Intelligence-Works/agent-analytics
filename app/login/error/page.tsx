@@ -1,22 +1,30 @@
 import Link from "next/link";
 import { AlertCircle } from "lucide-react";
+import Image from "next/image";
 
 export default function AuthErrorPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-950">
+    <div className="flex min-h-screen items-center justify-center bg-white">
       <div className="w-full max-w-md space-y-6 px-4 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10">
-          <AlertCircle className="h-8 w-8 text-red-400" />
+        <Image
+          src="/logo_w_text.svg"
+          alt="Unusual"
+          width={120}
+          height={22}
+          className="mx-auto mb-4"
+        />
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+          <AlertCircle className="h-8 w-8 text-red-500" />
         </div>
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="text-2xl font-bold text-gray-900">
           Something went wrong
         </h1>
-        <p className="text-gray-400">
+        <p className="text-gray-500">
           There was a problem signing you in. Please try again.
         </p>
         <Link
           href="/login"
-          className="inline-block rounded-lg bg-indigo-500 px-6 py-2.5 font-medium text-white transition-colors hover:bg-indigo-400"
+          className="inline-block rounded-lg bg-indigo-500 px-6 py-2.5 font-medium text-white transition-colors hover:bg-indigo-600"
         >
           Back to login
         </Link>

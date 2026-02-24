@@ -23,14 +23,14 @@ export default async function DashboardPage() {
   return (
     <div className="flex h-full items-center justify-center">
       <div className="text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-800">
-          <Globe className="h-6 w-6 text-indigo-400" />
+        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+          <Globe className="h-6 w-6 text-indigo-500" />
         </div>
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="text-xl font-semibold text-gray-900">
           Welcome to Agent Analytics
         </h2>
-        <p className="mb-8 mt-2 text-gray-400">
-          Add your first domain to start tracking AI bot traffic.
+        <p className="mb-8 mt-2 text-gray-500">
+          Add your first domain to start tracking AI agent traffic.
         </p>
         <DomainForm />
       </div>

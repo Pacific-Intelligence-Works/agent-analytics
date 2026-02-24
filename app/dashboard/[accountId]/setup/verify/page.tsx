@@ -80,6 +80,9 @@ export default function VerifyPage({
       sessionStorage.removeItem(`setup_${accountId}_zoneId`);
       sessionStorage.removeItem(`setup_${accountId}_apiToken`);
 
+      // Fire-and-forget: trigger initial sync
+      fetch(`/api/accounts/${accountId}/sync`, { method: "POST" });
+
       setStatus("success");
     } catch {
       setStatus("error");
@@ -104,9 +107,9 @@ export default function VerifyPage({
     >
       <div className="space-y-6">
         {(status === "verifying" || status === "saving") && (
-          <div className="flex items-center gap-3 rounded-lg border border-gray-800 bg-gray-900 p-4">
-            <Loader2 className="h-5 w-5 animate-spin text-indigo-400" />
-            <p className="text-sm text-gray-300">
+          <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+            <p className="text-sm text-gray-600">
               {status === "verifying"
                 ? "Verifying your Cloudflare credentials..."
                 : "Saving your connection..."}
@@ -116,14 +119,14 @@ export default function VerifyPage({
 
         {status === "success" && (
           <>
-            <div className="flex items-start gap-3 rounded-lg border border-green-900/50 bg-green-950/30 p-4">
-              <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-400" />
+            <div className="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-4">
+              <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />
               <div>
-                <p className="font-medium text-green-300">
+                <p className="font-medium text-green-700">
                   Connection verified and saved
                 </p>
-                <p className="mt-1 text-sm text-green-400/70">
-                  Your Cloudflare analytics data will sync automatically.
+                <p className="mt-1 text-sm text-green-600">
+                  Syncing your data — this may take a few minutes.
                 </p>
               </div>
             </div>
@@ -139,19 +142,19 @@ export default function VerifyPage({
 
         {status === "error" && (
           <>
-            <div className="flex items-start gap-3 rounded-lg border border-red-900/50 bg-red-950/30 p-4">
-              <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
+            <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4">
+              <XCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
               <div>
-                <p className="font-medium text-red-300">
+                <p className="font-medium text-red-700">
                   Verification failed
                 </p>
-                <p className="mt-1 text-sm text-red-400/70">{errorMsg}</p>
+                <p className="mt-1 text-sm text-red-600">{errorMsg}</p>
               </div>
             </div>
             <div className="flex gap-3">
               <button
                 onClick={verify}
-                className="flex items-center gap-2 rounded-lg border border-gray-700 px-4 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800"
+                className="flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
               >
                 <RotateCcw className="h-4 w-4" />
                 Retry
@@ -160,7 +163,7 @@ export default function VerifyPage({
                 onClick={() =>
                   router.push(`/dashboard/${accountId}/setup/api-token`)
                 }
-                className="rounded-lg border border-gray-700 px-4 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-gray-800"
+                className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
               >
                 Re-enter credentials
               </button>

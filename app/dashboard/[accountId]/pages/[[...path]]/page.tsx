@@ -10,7 +10,7 @@ export default async function PageDrilldownPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ accountId: string; path: string[] }>;
+  params: Promise<{ accountId: string; path?: string[] }>;
   searchParams: Promise<{ days?: string }>;
 }) {
   const session = await auth();
@@ -23,8 +23,8 @@ export default async function PageDrilldownPage({
   const account = await getAccountWithConnection(accountId, session.user.id);
   if (!account) redirect("/dashboard");
 
-  // Reconstruct the path from segments
-  const pagePath = "/" + pathSegments.join("/");
+  // Reconstruct the path from segments (optional catch-all: undefined when no segments)
+  const pagePath = pathSegments ? "/" + pathSegments.join("/") : "/";
   const displayPath = pagePath === "/" ? "Homepage (/)" : pagePath;
 
   const detail = await getPathDetail(accountId, pagePath, days);
@@ -49,24 +49,24 @@ export default async function PageDrilldownPage({
         <div className="mb-3 flex items-center justify-between">
           <Link
             href={`/dashboard/${accountId}${days !== 7 ? `?days=${days}` : ""}`}
-            className="flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-white"
+            className="flex items-center gap-1 text-sm text-gray-500 transition-colors hover:text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to dashboard
           </Link>
           <DateRangePicker currentDays={days} />
         </div>
-        <h1 className="text-xl font-bold text-white">{account.domain}</h1>
-        <p className="mt-1 font-mono text-sm text-indigo-400">{displayPath}</p>
-        <p className="mt-1 text-xs text-gray-500">
+        <h1 className="text-xl font-bold text-gray-900">{account.domain}</h1>
+        <p className="mt-1 font-mono text-sm text-indigo-600">{displayPath}</p>
+        <p className="mt-1 text-xs text-gray-400">
           {totalRequests.toLocaleString()} total agent requests over last {days}{" "}
           days
         </p>
       </div>
 
       {detail.length === 0 ? (
-        <div className="flex h-48 items-center justify-center rounded-xl border border-gray-800 bg-gray-900/50">
-          <p className="text-sm text-gray-500">
+        <div className="flex h-48 items-center justify-center rounded-xl border border-gray-200 bg-white">
+          <p className="text-sm text-gray-400">
             No crawl data for this page in the selected time range.
           </p>
         </div>
@@ -76,33 +76,33 @@ export default async function PageDrilldownPage({
           <PathDetailChart data={detail} days={days} />
 
           {/* Agent breakdown table */}
-          <div className="rounded-xl border border-gray-800 bg-gray-900/50">
-            <div className="border-b border-gray-800 p-4">
-              <h3 className="text-sm font-medium text-gray-400">
+          <div className="rounded-xl border border-gray-200 bg-white">
+            <div className="border-b border-gray-200 p-4">
+              <h3 className="text-sm font-medium text-gray-500">
                 Agent Breakdown
               </h3>
             </div>
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-800 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <tr className="border-b border-gray-200 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
                   <th className="px-4 py-3">Agent</th>
                   <th className="px-4 py-3 text-right">Requests</th>
                   <th className="px-4 py-3 text-right">Share</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800/50">
+              <tbody className="divide-y divide-gray-100">
                 {sortedAgents.map(([agent, count]) => (
                   <tr
                     key={agent}
-                    className="transition-colors hover:bg-gray-800/30"
+                    className="transition-colors hover:bg-gray-50"
                   >
-                    <td className="whitespace-nowrap px-4 py-3 font-mono text-sm text-gray-300">
+                    <td className="whitespace-nowrap px-4 py-3 font-mono text-sm text-gray-700">
                       {agent}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-medium text-white">
+                    <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-medium text-gray-900">
                       {count.toLocaleString()}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-right text-sm text-gray-400">
+                    <td className="whitespace-nowrap px-4 py-3 text-right text-sm text-gray-500">
                       {totalRequests > 0
                         ? ((count / totalRequests) * 100).toFixed(1)
                         : 0}

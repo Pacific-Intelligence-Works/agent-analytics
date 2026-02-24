@@ -4,6 +4,9 @@ import { accounts, connections } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { syncAccount } from "@/lib/cloudflare/sync";
 
+// Allow up to 5 minutes for syncing multiple accounts
+export const maxDuration = 300;
+
 function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }

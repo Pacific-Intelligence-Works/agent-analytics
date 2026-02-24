@@ -26,7 +26,7 @@ export function SetupShell({
           {backHref ? (
             <Link
               href={backHref}
-              className="flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-white"
+              className="flex items-center gap-1 text-sm text-gray-500 transition-colors hover:text-gray-900"
             >
               <ArrowLeft className="h-4 w-4" />
               Back
@@ -34,7 +34,7 @@ export function SetupShell({
           ) : (
             <div />
           )}
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-400">
             Step {step} of {totalSteps}
           </span>
         </div>
@@ -43,7 +43,7 @@ export function SetupShell({
             <div
               key={i}
               className={`h-1 flex-1 rounded-full ${
-                i < step ? "bg-indigo-500" : "bg-gray-800"
+                i < step ? "bg-indigo-500" : "bg-gray-200"
               }`}
             />
           ))}
@@ -51,8 +51,8 @@ export function SetupShell({
       </div>
 
       {/* Card */}
-      <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-8">
-        <h2 className="mb-6 text-xl font-semibold text-white">{title}</h2>
+      <div className="rounded-xl border border-gray-200 bg-white p-8">
+        <h2 className="mb-6 text-xl font-semibold text-gray-900">{title}</h2>
         {children}
       </div>
     </div>
