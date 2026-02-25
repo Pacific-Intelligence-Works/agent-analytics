@@ -34,13 +34,13 @@ const FEATURES = [
 ];
 
 const MOCK_AGENTS = [
-  { name: "GPTBot", requests: 2847, pct: 100, color: "#10b981" },
-  { name: "ClaudeBot", requests: 2134, pct: 75, color: "#f59e0b" },
-  { name: "PerplexityBot", requests: 1562, pct: 55, color: "#8b5cf6" },
-  { name: "Google-Extended", requests: 1203, pct: 42, color: "#3b82f6" },
-  { name: "ChatGPT-User", requests: 891, pct: 31, color: "#34d399" },
-  { name: "Applebot", requests: 634, pct: 22, color: "#6b7280" },
-  { name: "DeepSeekBot", requests: 412, pct: 14, color: "#06b6d4" },
+  { name: "ChatGPT", requests: 2847, pct: 100, color: "#10b981" },
+  { name: "Claude", requests: 2134, pct: 75, color: "#f59e0b" },
+  { name: "Perplexity", requests: 1562, pct: 55, color: "#8b5cf6" },
+  { name: "Gemini", requests: 1203, pct: 42, color: "#3b82f6" },
+  { name: "Llama", requests: 891, pct: 31, color: "#6366f1" },
+  { name: "Siri", requests: 634, pct: 22, color: "#6b7280" },
+  { name: "DeepSeek", requests: 412, pct: 14, color: "#06b6d4" },
 ];
 
 // Data points for mock area chart (cumulative stacked values for SVG paths)
@@ -109,7 +109,7 @@ export default function HomePage() {
       </nav>
 
       {/* Hero */}
-      <section className="flex min-h-screen flex-col items-center justify-center px-6 pt-14 text-center">
+      <section className="flex flex-col items-center px-6 pb-24 pt-32 text-center">
         <div className="mb-6 inline-flex items-center rounded-full border border-gray-300 px-4 py-1.5 text-sm font-medium text-emerald-600">
           Open source &amp; free
         </div>
@@ -139,6 +139,118 @@ export default function HomePage() {
             Unusual
           </a>
         </p>
+
+        {/* Hero graphic — abstract dashboard preview */}
+        <div className="mx-auto mt-16 w-full max-w-4xl">
+          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 p-5 shadow-2xl shadow-gray-200/60">
+            {/* Stat cards */}
+            <div className="mb-4 grid grid-cols-4 gap-3">
+              {[
+                { label: "Total Requests", value: "9,683" },
+                { label: "Unique Agents", value: "11" },
+                { label: "Data Transferred", value: "24.1 MB" },
+                { label: "Last Synced", value: "2 min ago" },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-lg border border-gray-200 bg-white px-3 py-2.5"
+                >
+                  <p className="text-[9px] text-gray-400">{stat.label}</p>
+                  <p className="text-sm font-bold text-gray-900">{stat.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Area chart */}
+            <div className="mb-4 rounded-lg border border-gray-200 bg-white p-4">
+              <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-gray-400">
+                AI Agent Traffic Over Time
+              </p>
+              <svg viewBox="0 0 500 120" className="w-full" preserveAspectRatio="none">
+                {[0.25, 0.5, 0.75].map((f) => (
+                  <line
+                    key={f}
+                    x1={0}
+                    y1={120 * (1 - f)}
+                    x2={500}
+                    y2={120 * (1 - f)}
+                    stroke="#f3f4f6"
+                    strokeWidth={1}
+                  />
+                ))}
+                {buildStackedPaths(500, 120).map((layer, i) => (
+                  <path
+                    key={i}
+                    d={layer.d}
+                    fill={layer.color}
+                    opacity={layer.opacity}
+                  />
+                ))}
+              </svg>
+              <div className="mt-2.5 flex gap-4">
+                {[
+                  { label: "OpenAI", color: "bg-emerald-500" },
+                  { label: "Anthropic", color: "bg-amber-500" },
+                  { label: "Perplexity", color: "bg-violet-500" },
+                  { label: "Google", color: "bg-blue-500" },
+                ].map((l) => (
+                  <span key={l.label} className="flex items-center gap-1.5 text-[10px] text-gray-400">
+                    <span className={`inline-block h-2 w-2 rounded-full ${l.color}`} />
+                    {l.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom row: bar chart + top pages */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* Bar chart */}
+              <div className="rounded-lg border border-gray-200 bg-white p-4">
+                <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-gray-400">
+                  Requests by Agent
+                </p>
+                <div className="space-y-2">
+                  {MOCK_AGENTS.slice(0, 5).map((a) => (
+                    <div key={a.name} className="flex items-center gap-2">
+                      <span className="w-20 shrink-0 text-right text-[10px] text-gray-500">
+                        {a.name}
+                      </span>
+                      <div className="flex-1">
+                        <div
+                          className="h-3.5 rounded-sm"
+                          style={{
+                            width: `${a.pct}%`,
+                            backgroundColor: a.color,
+                            opacity: 0.75,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Top pages */}
+              <div className="rounded-lg border border-gray-200 bg-white p-4">
+                <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-gray-400">
+                  Top Crawled Pages
+                </p>
+                <div className="space-y-1.5">
+                  {MOCK_PAGES.map((p) => (
+                    <div key={p.path} className="flex items-center justify-between">
+                      <span className="truncate font-mono text-[10px] text-gray-600">
+                        {p.path === "/" ? "/" : p.path}
+                      </span>
+                      <span className="ml-2 shrink-0 font-mono text-[10px] font-medium text-gray-900">
+                        {p.requests.toLocaleString()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Agents tracked */}
