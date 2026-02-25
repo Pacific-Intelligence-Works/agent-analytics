@@ -46,7 +46,7 @@ export function AllPagesTable({ paths, accountId, days }: AllPagesTableProps) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search pages..."
-            className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
           />
         </div>
       </div>
@@ -76,7 +76,7 @@ export function AllPagesTable({ paths, accountId, days }: AllPagesTableProps) {
                   <td className="max-w-md truncate px-4 py-3 font-mono text-sm">
                     <Link
                       href={detailHref(row.path)}
-                      className="text-indigo-600 hover:text-indigo-500"
+                      className="text-emerald-600 hover:text-emerald-500"
                       title={row.path}
                     >
                       {displayPath(row.path)}

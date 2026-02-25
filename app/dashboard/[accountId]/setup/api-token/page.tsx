@@ -46,7 +46,7 @@ export default function ApiTokenPage({
       backHref={`/dashboard/${accountId}/setup/zone-id`}
     >
       <div className="mb-6 flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
-        <Info className="mt-0.5 h-5 w-5 shrink-0 text-indigo-500" />
+        <Info className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
         <div className="text-sm text-gray-500">
           <p className="mb-2 font-medium text-gray-700">
             Create a Cloudflare API token:
@@ -54,7 +54,7 @@ export default function ApiTokenPage({
           <ol className="list-inside list-decimal space-y-1.5">
             <li>
               Go to{" "}
-              <span className="font-mono text-indigo-600">
+              <span className="font-mono text-emerald-600">
                 dash.cloudflare.com/profile/api-tokens
               </span>
             </li>
@@ -106,7 +106,7 @@ export default function ApiTokenPage({
               setError("");
             }}
             placeholder="Paste your Cloudflare API token"
-            className="mb-2 w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 pr-10 font-mono text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="mb-2 w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 pr-10 font-mono text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
           />
           <button
             type="button"
@@ -130,7 +130,7 @@ export default function ApiTokenPage({
         <button
           type="submit"
           disabled={!apiToken.trim()}
-          className="mt-2 flex items-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-600 disabled:opacity-50"
+          className="mt-2 flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
         >
           Continue
           <ArrowRight className="h-4 w-4" />

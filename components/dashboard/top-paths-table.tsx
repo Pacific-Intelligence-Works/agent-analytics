@@ -50,7 +50,7 @@ export function TopPathsTable({ paths, accountId, days }: TopPathsTableProps) {
         </h3>
         <Link
           href={`/dashboard/${accountId}/all-pages${daysParam}`}
-          className="flex items-center gap-1 text-xs font-medium text-indigo-600 transition-colors hover:text-indigo-500"
+          className="flex items-center gap-1 text-xs font-medium text-emerald-600 transition-colors hover:text-emerald-500"
         >
           View all
           <ArrowUpRight className="h-3 w-3" />
@@ -74,7 +74,7 @@ export function TopPathsTable({ paths, accountId, days }: TopPathsTableProps) {
                 <td className="max-w-xs truncate px-4 py-3 font-mono text-sm">
                   <Link
                     href={detailHref(row.path)}
-                    className="text-indigo-600 hover:text-indigo-500"
+                    className="text-emerald-600 hover:text-emerald-500"
                     title={row.path}
                   >
                     {displayPath(row.path)}

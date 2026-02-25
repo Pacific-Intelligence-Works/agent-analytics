@@ -127,7 +127,7 @@ export function SyncButton({ accountId }: SyncButtonProps) {
           <div className="relative w-full max-w-sm rounded-xl border border-gray-200 bg-white p-6 shadow-2xl">
             {state === "syncing" && (
               <div className="flex flex-col items-center gap-4 text-center">
-                <Loader2 className="h-10 w-10 animate-spin text-indigo-500" />
+                <Loader2 className="h-10 w-10 animate-spin text-emerald-600" />
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">
                     Syncing data from Cloudflare

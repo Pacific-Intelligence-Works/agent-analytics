@@ -100,7 +100,7 @@ export default function UnsupportedPage({
               onClick={() => toggleProvider(p)}
               className={`rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${
                 selected.includes(p)
-                  ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                  ? "border-emerald-600 bg-emerald-50 text-emerald-700"
                   : "border-gray-200 text-gray-600 hover:bg-gray-50"
               }`}
             >
@@ -122,7 +122,7 @@ export default function UnsupportedPage({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
-            className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-indigo-500"
+            className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-emerald-600"
           />
         </div>
 
@@ -131,7 +131,7 @@ export default function UnsupportedPage({
             type="checkbox"
             checked={notify}
             onChange={(e) => setNotify(e.target.checked)}
-            className="rounded border-gray-300 text-indigo-500 focus:ring-indigo-500"
+            className="rounded border-gray-300 text-emerald-600 focus:ring-emerald-600"
           />
           Notify me when my provider is supported
         </label>
@@ -139,7 +139,7 @@ export default function UnsupportedPage({
         <button
           type="submit"
           disabled={isLoading || selected.length === 0}
-          className="flex items-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-600 disabled:opacity-50"
+          className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
         >
           {isLoading ? (
             <Loader2 className="h-4 w-4 animate-spin" />

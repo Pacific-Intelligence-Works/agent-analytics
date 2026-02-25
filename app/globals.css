@@ -8,9 +8,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand: #6366f1;       /* indigo-500 */
-  --color-brand-hover: #4f46e5; /* indigo-600 */
-  --color-brand-muted: #4338ca; /* indigo-700 */
+  --color-brand: #059669;       /* emerald-600 */
+  --color-brand-hover: #047857; /* emerald-700 */
+  --color-brand-muted: #065f46; /* emerald-800 */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

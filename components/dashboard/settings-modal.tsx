@@ -56,7 +56,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             <div className="flex gap-2">
               <button
                 onClick={enableAll}
-                className="rounded px-2 py-1 text-xs text-indigo-600 transition-colors hover:bg-gray-100"
+                className="rounded px-2 py-1 text-xs text-emerald-600 transition-colors hover:bg-gray-100"
               >
                 Enable all
               </button>
@@ -93,7 +93,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                         type="checkbox"
                         checked={!disabledAgents.has(agent.ua)}
                         onChange={() => toggleAgent(agent.ua)}
-                        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0"
+                        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-600 focus:ring-offset-0"
                       />
                       <div className="min-w-0 flex-1">
                         <span className="font-mono text-xs text-gray-800">

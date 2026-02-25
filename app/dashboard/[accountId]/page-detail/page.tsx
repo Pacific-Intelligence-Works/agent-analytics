@@ -55,7 +55,7 @@ export default async function PageDetailPage({
           <DateRangePicker currentDays={days} />
         </div>
         <h1 className="text-xl font-bold text-gray-900">{account.domain}</h1>
-        <p className="mt-1 font-mono text-sm text-indigo-600">{displayPath}</p>
+        <p className="mt-1 font-mono text-sm text-emerald-600">{displayPath}</p>
         <p className="mt-1 text-xs text-gray-400">
           {totalRequests.toLocaleString()} total agent requests over last {days}{" "}
           days

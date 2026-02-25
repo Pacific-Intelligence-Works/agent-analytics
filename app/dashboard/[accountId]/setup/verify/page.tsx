@@ -108,7 +108,7 @@ export default function VerifyPage({
       <div className="space-y-6">
         {(status === "verifying" || status === "saving") && (
           <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
-            <Loader2 className="h-5 w-5 animate-spin text-indigo-500" />
+            <Loader2 className="h-5 w-5 animate-spin text-emerald-600" />
             <p className="text-sm text-gray-600">
               {status === "verifying"
                 ? "Verifying your Cloudflare credentials..."
@@ -132,7 +132,7 @@ export default function VerifyPage({
             </div>
             <button
               onClick={() => router.push(`/dashboard/${accountId}`)}
-              className="flex items-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-600"
+              className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
             >
               Go to dashboard
               <ArrowRight className="h-4 w-4" />

@@ -43,7 +43,7 @@ export function SetupShell({
             <div
               key={i}
               className={`h-1 flex-1 rounded-full ${
-                i < step ? "bg-indigo-500" : "bg-gray-200"
+                i < step ? "bg-emerald-600" : "bg-gray-200"
               }`}
             />
           ))}

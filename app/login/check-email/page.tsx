@@ -12,8 +12,8 @@ export default function CheckEmailPage() {
           height={22}
           className="mx-auto mb-4"
         />
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-indigo-50">
-          <Mail className="h-8 w-8 text-indigo-500" />
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
+          <Mail className="h-8 w-8 text-emerald-600" />
         </div>
         <h1 className="text-2xl font-bold text-gray-900">Check your email</h1>
         <p className="text-gray-500">

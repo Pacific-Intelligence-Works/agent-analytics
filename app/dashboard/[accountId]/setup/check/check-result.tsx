@@ -104,14 +104,14 @@ export function CheckResult({
                 value={devEmail}
                 onChange={(e) => setDevEmail(e.target.value)}
                 placeholder="dev@company.com"
-                className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
                 disabled={inviteLoading}
               />
             </div>
             <button
               type="submit"
               disabled={inviteLoading || !devEmail.trim()}
-              className="flex items-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-600 disabled:opacity-50"
+              className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
             >
               {inviteLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -136,7 +136,7 @@ export function CheckResult({
             <>
               <Link
                 href={`/dashboard/${accountId}/setup/zone-id`}
-                className="flex items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-600"
+                className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
               >
                 Set this up myself
                 <ArrowRight className="h-4 w-4" />
@@ -159,7 +159,7 @@ export function CheckResult({
               </Link>
               <Link
                 href={`/dashboard/${accountId}/setup/zone-id`}
-                className="flex items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-600"
+                className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
               >
                 I use Cloudflare — continue
                 <ArrowRight className="h-4 w-4" />
