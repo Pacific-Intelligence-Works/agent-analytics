@@ -253,6 +253,27 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* What is Agent Analytics? */}
+      <section className="border-t border-gray-200 py-24">
+        <div className="mx-auto max-w-3xl px-6">
+          <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
+            Website traffic is dropping.<br />
+            <span className="text-gray-400">AI traffic is replacing it.</span>
+          </h2>
+          <div className="space-y-4 text-lg leading-relaxed text-gray-500">
+            <p>
+              Today, people ask AI chatbots like ChatGPT instead of searching the web. When they do, the AI searches the web on their behalf, reads the relevant websites, and answers the person directly — they never visit your site.
+            </p>
+            <p>
+              In these cases, your website still delivered an impression. The AI read it. But traditional analytics tools like Google Analytics can&apos;t see AI agent visits, so most companies have no idea this is happening.
+            </p>
+            <p>
+              <span className="font-medium text-gray-900">Agent Analytics makes this traffic visible.</span> Connect your hosting provider and see which AI models are visiting your site, which pages they&apos;re reading, how often, and how it&apos;s changing over time.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Agents tracked */}
       <section className="border-t border-gray-200 py-24">
         <div className="mx-auto max-w-5xl px-6 text-center">
@@ -447,22 +468,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Philosophy */}
-      <section className="border-t border-gray-200 py-24">
-        <div className="mx-auto max-w-2xl px-6 text-center">
-          <h2 className="mb-6 text-3xl font-bold text-gray-900">
-            Why Agent Analytics?
-          </h2>
-          <p className="text-lg leading-relaxed text-gray-500">
-            AI agents are the new visitors to your website. ChatGPT, Claude,
-            Perplexity, and others are reading your content to answer questions,
-            train models, and power search results. You deserve to know who's
-            reading — and what they're reading. Agent Analytics makes this
-            visible, for free.
-          </p>
-        </div>
-      </section>
-
       {/* Final CTA */}
       <section className="border-t border-gray-200 py-24">
         <div className="text-center">
@@ -484,6 +489,15 @@ export default function HomePage() {
               Unusual
             </a>
           </p>
+          <div className="mt-4 flex items-center justify-center gap-4 text-xs text-gray-400">
+            <Link href="/legal/terms-of-service" className="underline hover:text-gray-600">
+              Terms of Service
+            </Link>
+            <span>·</span>
+            <Link href="/legal/privacy-policy" className="underline hover:text-gray-600">
+              Privacy Policy
+            </Link>
+          </div>
         </div>
       </section>
     </div>

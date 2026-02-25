@@ -35,6 +35,17 @@ export default async function LoginPage() {
           </p>
         </div>
         <LoginForm />
+        <p className="text-center text-xs text-gray-400">
+          By signing up, you agree to our{" "}
+          <a href="/legal/terms-of-service" className="text-gray-500 underline hover:text-gray-700">
+            Terms of Service
+          </a>{" "}
+          and{" "}
+          <a href="/legal/privacy-policy" className="text-gray-500 underline hover:text-gray-700">
+            Privacy Policy
+          </a>
+          .
+        </p>
       </div>
     </div>
   );
