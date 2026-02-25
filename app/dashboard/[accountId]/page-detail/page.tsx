@@ -6,26 +6,24 @@ import Link from "next/link";
 import { PathDetailChart } from "./path-detail-chart";
 import { DateRangePicker } from "@/components/dashboard/date-range-picker";
 
-export default async function PageDrilldownPage({
+export default async function PageDetailPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ accountId: string; path?: string[] }>;
-  searchParams: Promise<{ days?: string }>;
+  params: Promise<{ accountId: string }>;
+  searchParams: Promise<{ days?: string; path?: string }>;
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const { accountId, path: pathSegments } = await params;
+  const { accountId } = await params;
   const sp = await searchParams;
   const days = Math.min(Number(sp.days) || 7, 30);
+  const pagePath = sp.path || "/";
+  const displayPath = pagePath === "/" ? "Homepage (/)" : pagePath;
 
   const account = await getAccountWithConnection(accountId, session.user.id);
   if (!account) redirect("/dashboard");
-
-  // Reconstruct the path from segments (optional catch-all: undefined when no segments)
-  const pagePath = pathSegments ? "/" + pathSegments.join("/") : "/";
-  const displayPath = pagePath === "/" ? "Homepage (/)" : pagePath;
 
   const detail = await getPathDetail(accountId, pagePath, days);
 

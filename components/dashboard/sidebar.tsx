@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import { BarChart3, LogOut, Plus, Globe } from "lucide-react";
+import { Bot, LogOut, Plus, Globe } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -32,10 +32,13 @@ export function Sidebar({ user, accounts }: SidebarProps) {
   return (
     <aside className="flex w-64 flex-col border-r border-gray-200 bg-white">
       <div className="flex h-16 items-center gap-2 border-b border-gray-200 px-4">
-        <BarChart3 className="h-6 w-6 text-indigo-500" />
-        <span className="text-lg font-semibold text-gray-900">
-          Agent Analytics
-        </span>
+        <Bot className="h-6 w-6 text-emerald-600" />
+        <div className="leading-tight">
+          <span className="text-lg font-semibold text-gray-900">
+            Agent Analytics
+          </span>
+          <a href="https://unusual.ai" target="_blank" rel="noopener noreferrer" className="block text-[10px] text-gray-400 hover:text-gray-500">By Unusual</a>
+        </div>
       </div>
 
       <nav className="flex-1 overflow-auto p-4">

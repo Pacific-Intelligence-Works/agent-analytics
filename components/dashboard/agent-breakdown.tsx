@@ -10,7 +10,7 @@ import {
   Cell,
 } from "recharts";
 import { useAgentFilter } from "./agent-filter-provider";
-import { AGENT_COLORS } from "@/lib/cloudflare/bots";
+import { AGENT_COLORS, AI_AGENTS } from "@/lib/cloudflare/bots";
 
 interface Snapshot {
   botName: string;
@@ -20,6 +20,23 @@ interface Snapshot {
 
 interface AgentBreakdownProps {
   snapshots: Snapshot[];
+}
+
+const agentDescriptions = new Map(
+  AI_AGENTS.map((a) => [a.ua, a.description])
+);
+
+function AgentTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: { agent: string; requests: number } }> }) {
+  if (!active || !payload?.[0]) return null;
+  const { agent, requests } = payload[0].payload;
+  const desc = agentDescriptions.get(agent);
+  return (
+    <div className="max-w-xs rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm">
+      <p className="text-xs font-medium text-gray-900">{agent}</p>
+      <p className="text-xs text-gray-500">{requests.toLocaleString()} requests</p>
+      {desc && <p className="mt-1 text-xs leading-snug text-gray-400">{desc}</p>}
+    </div>
+  );
 }
 
 export function AgentBreakdown({ snapshots }: AgentBreakdownProps) {
@@ -63,16 +80,8 @@ export function AgentBreakdown({ snapshots }: AgentBreakdownProps) {
             width={100}
           />
           <Tooltip
-            contentStyle={{
-              backgroundColor: "#ffffff",
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-              fontSize: "12px",
-            }}
-            formatter={(value) => [
-              Number(value).toLocaleString(),
-              "Requests",
-            ]}
+            content={<AgentTooltip />}
+            cursor={{ fill: "rgba(0, 0, 0, 0.04)" }}
           />
           <Bar dataKey="requests" radius={[0, 4, 4, 0]}>
             {data.map((entry) => (

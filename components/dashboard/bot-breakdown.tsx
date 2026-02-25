@@ -22,6 +22,17 @@ interface BotBreakdownProps {
   snapshots: Snapshot[];
 }
 
+function OrgTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: { org: string; requests: number } }> }) {
+  if (!active || !payload?.[0]) return null;
+  const { org, requests } = payload[0].payload;
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm">
+      <p className="text-xs font-medium text-gray-900">{org}</p>
+      <p className="text-xs text-gray-500">{requests.toLocaleString()} requests</p>
+    </div>
+  );
+}
+
 export function BotBreakdown({ snapshots }: BotBreakdownProps) {
   const { disabledAgents } = useAgentFilter();
 
@@ -64,16 +75,8 @@ export function BotBreakdown({ snapshots }: BotBreakdownProps) {
             width={80}
           />
           <Tooltip
-            contentStyle={{
-              backgroundColor: "#ffffff",
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-              fontSize: "12px",
-            }}
-            formatter={(value) => [
-              Number(value).toLocaleString(),
-              "Requests",
-            ]}
+            content={<OrgTooltip />}
+            cursor={{ fill: "rgba(0, 0, 0, 0.04)" }}
           />
           <Bar dataKey="requests" radius={[0, 4, 4, 0]}>
             {data.map((entry) => (

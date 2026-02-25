@@ -107,6 +107,28 @@ export async function getPathTimeSeries(
   return rows;
 }
 
+/** Fetch all crawled paths for an account, aggregated across dates and agents */
+export async function getAllPathsByAccount(
+  accountId: string,
+  days: number = 7
+) {
+  return db
+    .select({
+      path: crawlerPaths.path,
+      totalRequests: sql<number>`sum(${crawlerPaths.requestCount})::int`,
+      agentCount: sql<number>`count(distinct ${crawlerPaths.botName})::int`,
+    })
+    .from(crawlerPaths)
+    .where(
+      and(
+        eq(crawlerPaths.accountId, accountId),
+        gte(crawlerPaths.date, daysAgoStr(days))
+      )
+    )
+    .groupBy(crawlerPaths.path)
+    .orderBy(desc(sql`sum(${crawlerPaths.requestCount})`));
+}
+
 /** Fetch crawl detail for a specific path — per-day, per-agent breakdown */
 export async function getPathDetail(
   accountId: string,

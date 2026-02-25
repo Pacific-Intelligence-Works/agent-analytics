@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { useAgentFilter } from "./agent-filter-provider";
 
 interface PathRow {
@@ -32,14 +33,28 @@ export function TopPathsTable({ paths, accountId, days }: TopPathsTableProps) {
     );
   }
 
+  function detailHref(path: string): string {
+    const params = new URLSearchParams();
+    params.set("path", path);
+    if (days && days !== 7) params.set("days", String(days));
+    return `/dashboard/${accountId}/page-detail?${params.toString()}`;
+  }
+
   const daysParam = days && days !== 7 ? `?days=${days}` : "";
 
   return (
     <div className="flex max-h-[400px] flex-col rounded-xl border border-gray-200 bg-white">
-      <div className="shrink-0 border-b border-gray-200 p-4">
+      <div className="flex shrink-0 items-center justify-between border-b border-gray-200 p-4">
         <h3 className="text-sm font-medium text-gray-500">
           Top Crawled Pages
         </h3>
+        <Link
+          href={`/dashboard/${accountId}/all-pages${daysParam}`}
+          className="flex items-center gap-1 text-xs font-medium text-indigo-600 transition-colors hover:text-indigo-500"
+        >
+          View all
+          <ArrowUpRight className="h-3 w-3" />
+        </Link>
       </div>
       <div className="overflow-auto">
         <table className="w-full">
@@ -58,7 +73,7 @@ export function TopPathsTable({ paths, accountId, days }: TopPathsTableProps) {
               >
                 <td className="max-w-xs truncate px-4 py-3 font-mono text-sm">
                   <Link
-                    href={`/dashboard/${accountId}/pages${row.path}${daysParam}`}
+                    href={detailHref(row.path)}
                     className="text-indigo-600 hover:text-indigo-500"
                     title={row.path}
                   >
