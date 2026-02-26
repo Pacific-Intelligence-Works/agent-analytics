@@ -47,9 +47,14 @@ export default function ZoneIdPage({
           <ol className="list-inside list-decimal space-y-1">
             <li>
               Go to{" "}
-              <span className="font-mono text-emerald-600">
+              <a
+                href="https://dash.cloudflare.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-emerald-600 underline hover:text-emerald-700"
+              >
                 dash.cloudflare.com
-              </span>
+              </a>
             </li>
             <li>Select your domain</li>
             <li>

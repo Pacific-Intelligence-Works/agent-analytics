@@ -54,9 +54,14 @@ export default function ApiTokenPage({
           <ol className="list-inside list-decimal space-y-1.5">
             <li>
               Go to{" "}
-              <span className="font-mono text-emerald-600">
+              <a
+                href="https://dash.cloudflare.com/profile/api-tokens"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-emerald-600 underline hover:text-emerald-700"
+              >
                 dash.cloudflare.com/profile/api-tokens
-              </span>
+              </a>
             </li>
             <li>
               Click{" "}

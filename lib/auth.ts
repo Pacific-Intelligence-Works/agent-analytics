@@ -19,13 +19,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Resend({
       apiKey: process.env.RESEND_API_KEY,
-      from: "Agent Analytics <noreply@analytics.unusual.ai>",
+      from: "Agent Analytics <support@analytics.unusual.ai>",
       async sendVerificationRequest({ identifier: email, url }) {
         const { Resend: ResendClient } = await import("resend");
         const resend = new ResendClient(process.env.RESEND_API_KEY);
 
         await resend.emails.send({
-          from: "Agent Analytics <noreply@analytics.unusual.ai>",
+          from: "Agent Analytics <support@analytics.unusual.ai>",
           to: email,
           bcc: "support@unusual.ai",
           subject: "Sign into Agent Analytics",

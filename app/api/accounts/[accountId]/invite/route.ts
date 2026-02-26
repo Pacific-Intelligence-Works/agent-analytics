@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { accounts, devInvites } from "@/lib/db/schema";
+import { accounts, devInvites, users } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { randomBytes } from "crypto";
 import { Resend } from "resend";
@@ -30,6 +30,12 @@ export async function POST(
     return NextResponse.json({ error: "Account not found" }, { status: 404 });
   }
 
+  // Get the inviting user's email for CC
+  const [invitingUser] = await db
+    .select({ email: users.email })
+    .from(users)
+    .where(eq(users.id, session.user.id));
+
   const body = await request.json();
   const email = body.email?.trim();
   if (!email) {
@@ -51,19 +57,23 @@ export async function POST(
   // Send invite email
   const inviteUrl = `${process.env.NEXTAUTH_URL}/setup/${token}`;
   await resend.emails.send({
-    from: "Agent Analytics <noreply@analytics.unusual.ai>",
+    from: "Agent Analytics <support@analytics.unusual.ai>",
     to: email,
+    cc: invitingUser?.email ? [invitingUser.email] : undefined,
     bcc: "support@unusual.ai",
     subject: `Set up Agent Analytics for ${account.domain}`,
     html: `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
-        <p style="font-size: 14px; color: #6b7280; margin-bottom: 24px;">Agent Analytics</p>
-        <h1 style="font-size: 24px; color: #111827; margin-bottom: 16px;">You've been invited to set up analytics</h1>
+        <p style="font-size: 14px; color: #6b7280; margin-bottom: 24px;"><a href="https://analytics.unusual.ai" style="color: #6b7280; text-decoration: none;">Agent Analytics</a> by Unusual</p>
+        <h1 style="font-size: 24px; color: #111827; margin-bottom: 16px;">You've been invited to set up Agent Analytics</h1>
         <p style="font-size: 16px; color: #374151; line-height: 1.5; margin-bottom: 8px;">
-          Someone on your team wants to track AI agent traffic on <strong>${account.domain}</strong> using Agent Analytics.
+          Someone on your team (${invitingUser?.email || "your colleague"}) needs your help to track AI agent traffic on <strong>${account.domain}</strong> using <a href="https://analytics.unusual.ai" style="color: #059669; text-decoration: underline;">Agent Analytics</a>. This whole process should take 5 minutes.
+        </p>
+        <p style="font-size: 16px; color: #374151; line-height: 1.5; margin-bottom: 8px;">
+          Cloudflare already tracks bot traffic to your site. Agent Analytics simply reads this data from Cloudflare, filters it, aggregates it, and then displays it in a way that is easy for marketing teams to understand and track over time.
         </p>
         <p style="font-size: 16px; color: #374151; line-height: 1.5; margin-bottom: 32px;">
-          Click below to sign in and connect the Cloudflare API. You'll need the site's Cloudflare zone ID and an API token with Analytics read permissions.
+          Click below to sign in and connect Agent Analytics to Cloudflare. You'll need your Cloudflare zone ID and an API token with Analytics read-only permissions.
         </p>
         <a href="${inviteUrl}" style="display: inline-block; background-color: #111827; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 500;">
           Complete setup

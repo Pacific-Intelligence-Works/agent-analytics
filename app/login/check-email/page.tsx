@@ -1,17 +1,24 @@
-import { Mail } from "lucide-react";
-import Image from "next/image";
+import { Mail, Bot } from "lucide-react";
 
 export default function CheckEmailPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-white">
       <div className="w-full max-w-md space-y-6 px-4 text-center">
-        <Image
-          src="/logo_w_text.svg"
-          alt="Unusual"
-          width={120}
-          height={22}
-          className="mx-auto mb-4"
-        />
+        <div className="mb-4 flex items-center justify-center gap-2">
+          <Bot className="h-7 w-7 text-emerald-600" />
+          <h2 className="text-3xl font-bold text-gray-900">Agent Analytics</h2>
+        </div>
+        <p className="text-xs text-gray-400">
+          By{" "}
+          <a
+            href="https://unusual.ai"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-500 underline hover:text-gray-700"
+          >
+            Unusual
+          </a>
+        </p>
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50">
           <Mail className="h-8 w-8 text-emerald-600" />
         </div>
