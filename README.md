@@ -4,7 +4,7 @@
 
 Agent Analytics monitors when AI crawlers like ChatGPT, Claude, Perplexity, and Gemini visit your pages — so you can understand how AI is consuming your content.
 
-**[Start tracking for free at agentanalytics.unusual.ai](https://agentanalytics.unusual.ai)**
+**[Start tracking for free at agentanalytics.unusual.ai](https://analytics.unusual.ai)**
 
 ## How it works
 
