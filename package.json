@@ -1,7 +1,12 @@
 {
-  "name": "unusual-agent-analytics",
+  "name": "agent-analytics",
   "version": "0.1.0",
-  "private": true,
+  "description": "See which AI agents are reading your website. Open-source Cloudflare AI crawler analytics dashboard.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pacific-Intelligence-Works/agent-analytics.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle, XCircle, ArrowRight, Mail, Loader2 } from "lucide-react";
+import { CheckCircle, XCircle, ArrowRight, Mail, Loader2, RotateCcw } from "lucide-react";
 
 interface CheckResultProps {
   domain: string;
@@ -17,11 +18,23 @@ export function CheckResult({
   method,
   accountId,
 }: CheckResultProps) {
+  const router = useRouter();
   const [showInviteForm, setShowInviteForm] = useState(false);
   const [devEmail, setDevEmail] = useState("");
   const [inviteLoading, setInviteLoading] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
   const [inviteError, setInviteError] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  async function handleTryDifferentDomain() {
+    setIsDeleting(true);
+    try {
+      await fetch(`/api/accounts/${accountId}`, { method: "DELETE" });
+      router.push("/dashboard");
+    } catch {
+      setIsDeleting(false);
+    }
+  }
 
   async function handleSendInvite(e: React.FormEvent) {
     e.preventDefault();
@@ -131,41 +144,51 @@ export function CheckResult({
           </button>
         </div>
       ) : (
-        <div className="flex flex-col gap-3 sm:flex-row">
-          {isCloudflare ? (
-            <>
-              <Link
-                href={`/dashboard/${accountId}/setup/zone-id`}
-                className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
-              >
-                Set this up myself
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <button
-                onClick={() => setShowInviteForm(true)}
-                className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
-              >
-                <Mail className="h-4 w-4" />
-                Send to a developer
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href={`/dashboard/${accountId}/setup/unsupported`}
-                className="rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
-              >
-                I don&apos;t use Cloudflare
-              </Link>
-              <Link
-                href={`/dashboard/${accountId}/setup/zone-id`}
-                className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
-              >
-                I use Cloudflare — continue
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </>
-          )}
+        <div className="space-y-3">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            {isCloudflare ? (
+              <>
+                <Link
+                  href={`/dashboard/${accountId}/setup/zone-id`}
+                  className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
+                >
+                  Set this up myself
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <button
+                  onClick={() => setShowInviteForm(true)}
+                  className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
+                >
+                  <Mail className="h-4 w-4" />
+                  Send to a developer
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href={`/dashboard/${accountId}/setup/unsupported`}
+                  className="rounded-lg border border-gray-200 px-4 py-2.5 text-center text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
+                >
+                  I don&apos;t use Cloudflare
+                </Link>
+                <Link
+                  href={`/dashboard/${accountId}/setup/zone-id`}
+                  className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
+                >
+                  I use Cloudflare — continue
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </>
+            )}
+          </div>
+          <button
+            onClick={handleTryDifferentDomain}
+            disabled={isDeleting}
+            className="flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-gray-600"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            {isDeleting ? "Removing..." : "Try a different domain"}
+          </button>
         </div>
       )}
     </div>

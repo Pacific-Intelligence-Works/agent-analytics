@@ -21,11 +21,6 @@ interface SyncResult {
   pathsUpserted: number;
 }
 
-/** Format a Date as YYYY-MM-DD */
-function toDateStr(d: Date): string {
-  return d.toISOString().split("T")[0];
-}
-
 /** Format a Date as ISO 8601 datetime for CF filters */
 function toISOStr(d: Date): string {
   return d.toISOString();

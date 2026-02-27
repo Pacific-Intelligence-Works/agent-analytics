@@ -14,7 +14,6 @@ export function SetupShell({
   step,
   totalSteps,
   title,
-  accountId,
   backHref,
   children,
 }: SetupShellProps) {

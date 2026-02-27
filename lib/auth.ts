@@ -9,6 +9,8 @@ import {
   verificationTokens,
 } from "@/lib/db/schema";
 
+const emailFrom = process.env.EMAIL_FROM || "Agent Analytics <support@analytics.unusual.ai>";
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db, {
     usersTable: users,
@@ -19,15 +21,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Resend({
       apiKey: process.env.RESEND_API_KEY,
-      from: "Agent Analytics <support@analytics.unusual.ai>",
+      from: emailFrom,
       async sendVerificationRequest({ identifier: email, url }) {
         const { Resend: ResendClient } = await import("resend");
         const resend = new ResendClient(process.env.RESEND_API_KEY);
 
         await resend.emails.send({
-          from: "Agent Analytics <support@analytics.unusual.ai>",
+          from: emailFrom,
           to: email,
-          bcc: "support@unusual.ai",
+          ...(process.env.ADMIN_BCC_EMAIL && { bcc: process.env.ADMIN_BCC_EMAIL }),
           subject: "Sign into Agent Analytics",
           html: `
             <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">

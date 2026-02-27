@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, use } from "react";
+import { useState, useRef, useEffect, useCallback, use } from "react";
 import { useRouter } from "next/navigation";
 import { SetupShell } from "@/components/setup/setup-shell";
 import {
@@ -22,21 +22,13 @@ export default function VerifyPage({
   const router = useRouter();
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
-  const [zoneId, setZoneId] = useState("");
-  const [apiToken, setApiToken] = useState("");
-
-  useEffect(() => {
-    const storedZone = sessionStorage.getItem(`setup_${accountId}_zoneId`);
-    const storedToken = sessionStorage.getItem(`setup_${accountId}_apiToken`);
-    if (!storedZone || !storedToken) {
-      router.replace(`/dashboard/${accountId}/setup/zone-id`);
-      return;
-    }
-    setZoneId(storedZone);
-    setApiToken(storedToken);
-  }, [accountId, router]);
+  const zoneIdRef = useRef("");
+  const apiTokenRef = useRef("");
+  const startedRef = useRef(false);
 
   const verify = useCallback(async () => {
+    const zoneId = zoneIdRef.current;
+    const apiToken = apiTokenRef.current;
     if (!zoneId || !apiToken) return;
 
     setStatus("verifying");
@@ -88,14 +80,25 @@ export default function VerifyPage({
       setStatus("error");
       setErrorMsg("Something went wrong. Please try again.");
     }
-  }, [accountId, zoneId, apiToken]);
+  }, [accountId]);
 
-  // Auto-verify on mount once we have credentials
+  // Read credentials from sessionStorage and auto-verify on mount.
+  // The setState calls inside verify() are intentional — this effect
+  // kicks off an async workflow that updates status as it progresses.
   useEffect(() => {
-    if (zoneId && apiToken && status === "idle") {
-      verify();
+    if (startedRef.current) return;
+    const storedZone = sessionStorage.getItem(`setup_${accountId}_zoneId`);
+    const storedToken = sessionStorage.getItem(`setup_${accountId}_apiToken`);
+    if (!storedZone || !storedToken) {
+      router.replace(`/dashboard/${accountId}/setup/zone-id`);
+      return;
     }
-  }, [zoneId, apiToken, status, verify]);
+    zoneIdRef.current = storedZone;
+    apiTokenRef.current = storedToken;
+    startedRef.current = true;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    verify();
+  }, [accountId, router, verify]);
 
   return (
     <SetupShell

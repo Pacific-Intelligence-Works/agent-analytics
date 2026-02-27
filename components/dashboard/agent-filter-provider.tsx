@@ -4,7 +4,6 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
   useCallback,
   type ReactNode,
 } from "react";
@@ -26,17 +25,17 @@ const AgentFilterContext = createContext<AgentFilterContextType>({
   disableAll: () => {},
 });
 
-export function AgentFilterProvider({ children }: { children: ReactNode }) {
-  const [disabledAgents, setDisabledAgents] = useState<Set<string>>(
-    new Set()
-  );
+function getInitialDisabled(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) return new Set(JSON.parse(stored));
+  } catch {}
+  return new Set();
+}
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setDisabledAgents(new Set(JSON.parse(stored)));
-    } catch {}
-  }, []);
+export function AgentFilterProvider({ children }: { children: ReactNode }) {
+  const [disabledAgents, setDisabledAgents] = useState<Set<string>>(getInitialDisabled);
 
   const save = useCallback((next: Set<string>) => {
     setDisabledAgents(next);

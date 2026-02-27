@@ -49,5 +49,9 @@ venv/
 # internal API routes (not for public repo)
 app/api/internal/
 
+# claude code
+.claude/
+CLAUDE.md
+
 # drizzle
 drizzle/meta/

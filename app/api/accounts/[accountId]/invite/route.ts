@@ -56,11 +56,12 @@ export async function POST(
 
   // Send invite email
   const inviteUrl = `${process.env.NEXTAUTH_URL}/setup/${token}`;
+  const emailFrom = process.env.EMAIL_FROM || "Agent Analytics <support@analytics.unusual.ai>";
   await resend.emails.send({
-    from: "Agent Analytics <support@analytics.unusual.ai>",
+    from: emailFrom,
     to: email,
     cc: invitingUser?.email ? [invitingUser.email] : undefined,
-    bcc: "support@unusual.ai",
+    ...(process.env.ADMIN_BCC_EMAIL && { bcc: process.env.ADMIN_BCC_EMAIL }),
     subject: `Set up Agent Analytics for ${account.domain}`,
     html: `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 20px;">
