@@ -34,7 +34,7 @@ export default function ZoneIdPage({
     <SetupShell
       step={2}
       totalSteps={4}
-      title="Enter your Zone ID"
+      title="Connect to Cloudflare (Step 1/2)"
       accountId={accountId}
       backHref={`/dashboard/${accountId}/setup/check`}
     >

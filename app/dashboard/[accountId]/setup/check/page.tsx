@@ -31,7 +31,7 @@ export default async function SetupCheckPage({
     <SetupShell
       step={1}
       totalSteps={4}
-      title="Cloudflare Detection"
+      title="Setup Agent Analytics"
       accountId={accountId}
       backHref="/dashboard"
     >

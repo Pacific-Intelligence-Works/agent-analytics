@@ -19,6 +19,11 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
         person_profiles: "identified_only",
         capture_pageview: true,
         capture_pageleave: true,
+        session_recording: {
+          maskAllInputs: false,
+          maskInputOptions: { password: true },
+          maskTextSelector: undefined,
+        },
         loaded: (ph) => {
           // Identify immediately on load if session is already available
           if (session?.user?.id && session.user.email) {

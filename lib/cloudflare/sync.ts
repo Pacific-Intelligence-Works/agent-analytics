@@ -15,6 +15,8 @@ const MAX_PATHS_PER_DATE = 50;
 const MAX_LOOKBACK_DAYS = 30;
 /** Cloudflare's max rows per query */
 const CF_PAGE_LIMIT = 10000;
+/** Max seconds per query window — some zones cap at 691200s (8 days) */
+const CF_MAX_WINDOW_SECONDS = 604800; // 7 days
 
 interface SyncResult {
   snapshotsUpserted: number;
@@ -124,10 +126,32 @@ async function fetchPage(
   return zones[0].httpRequestsAdaptiveGroups || [];
 }
 
+/** Split a date range into windows of CF_MAX_WINDOW_SECONDS */
+function chunkDateRange(
+  start: string,
+  end: string
+): Array<{ start: string; end: string }> {
+  const chunks: Array<{ start: string; end: string }> = [];
+  let chunkStart = new Date(start);
+  const endDate = new Date(end);
+
+  while (chunkStart < endDate) {
+    const chunkEnd = new Date(
+      Math.min(
+        chunkStart.getTime() + CF_MAX_WINDOW_SECONDS * 1000,
+        endDate.getTime()
+      )
+    );
+    chunks.push({ start: toISOStr(chunkStart), end: toISOStr(chunkEnd) });
+    chunkStart = chunkEnd;
+  }
+
+  return chunks;
+}
+
 /**
- * Fetch ALL rows by paginating in 10k increments.
- * Uses datetimeHour for granular cursor advancement.
- * Upsert handles any overlap on boundary hours.
+ * Fetch ALL rows by chunking into time windows (to stay under CF's
+ * per-zone time range limit) then paginating each window in 10k increments.
  */
 async function fetchAll(
   apiToken: string,
@@ -136,25 +160,29 @@ async function fetchAll(
   end: string
 ): Promise<CfRow[]> {
   const allRows: CfRow[] = [];
-  let cursor = start;
+  const windows = chunkDateRange(start, end);
 
-  while (cursor <= end) {
-    const rows = await fetchPage(apiToken, zoneId, cursor, end);
-    allRows.push(...rows);
+  for (const window of windows) {
+    let cursor = window.start;
 
-    if (rows.length < CF_PAGE_LIMIT) {
-      break;
-    }
+    while (cursor <= window.end) {
+      const rows = await fetchPage(apiToken, zoneId, cursor, window.end);
+      allRows.push(...rows);
 
-    // Hit the limit — advance cursor past the data we've received
-    const lastHour = rows[rows.length - 1].dimensions.datetimeHour;
-    if (lastHour === cursor) {
-      // All 10k rows are in the same hour — skip to next hour
-      cursor = advanceOneHour(lastHour);
-    } else {
-      // Re-query from lastHour to pick up any rows we missed
-      // on that boundary (upsert deduplicates)
-      cursor = lastHour;
+      if (rows.length < CF_PAGE_LIMIT) {
+        break;
+      }
+
+      // Hit the limit — advance cursor past the data we've received
+      const lastHour = rows[rows.length - 1].dimensions.datetimeHour;
+      if (lastHour === cursor) {
+        // All 10k rows are in the same hour — skip to next hour
+        cursor = advanceOneHour(lastHour);
+      } else {
+        // Re-query from lastHour to pick up any rows we missed
+        // on that boundary (upsert deduplicates)
+        cursor = lastHour;
+      }
     }
   }
 

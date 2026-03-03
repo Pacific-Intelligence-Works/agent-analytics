@@ -41,7 +41,7 @@ export default function ApiTokenPage({
     <SetupShell
       step={3}
       totalSteps={4}
-      title="Create & enter your API token"
+      title="Connect to Cloudflare (Step 2/2)"
       accountId={accountId}
       backHref={`/dashboard/${accountId}/setup/zone-id`}
     >
