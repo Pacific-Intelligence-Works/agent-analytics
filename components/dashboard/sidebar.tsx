@@ -78,7 +78,7 @@ export function Sidebar({ user, accounts }: SidebarProps) {
         )}
 
         <Link
-          href="/dashboard"
+          href="/dashboard/new"
           className="mt-2 flex items-center gap-2 rounded-lg px-2 py-2 text-sm text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-900"
         >
           <Plus className="h-4 w-4" />
