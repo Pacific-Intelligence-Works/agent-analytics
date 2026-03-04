@@ -40,7 +40,7 @@ export async function testZoneAccess(
       viewer {
         zones(filter: { zoneTag: "${zoneId}" }) {
           httpRequestsAdaptiveGroups(
-            filter: { datetime_gt: "${new Date(Date.now() - 86400000).toISOString()}" }
+            filter: { datetime_gt: "${new Date(Date.now() - 82800000).toISOString()}" }
             limit: 1
           ) {
             count
