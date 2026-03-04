@@ -48,13 +48,18 @@ const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MOCK_SERIES = {
   // Each array is cumulative y-values (0 = top of chart area, 180 = bottom)
   // Layer order bottom-to-top: Google, Perplexity, Anthropic, OpenAI
-  google:     [180, 160, 210, 190, 170, 120, 150],
+  google: [180, 160, 210, 190, 170, 120, 150],
   perplexity: [230, 200, 260, 240, 280, 180, 200],
-  claude:     [310, 340, 290, 360, 320, 210, 250],
-  gpt:        [420, 380, 510, 470, 390, 290, 340],
+  claude: [310, 340, 290, 360, 320, 210, 250],
+  gpt: [420, 380, 510, 470, 390, 290, 340],
 };
 
-function buildAreaPath(values: number[], maxY: number, w: number, h: number): string {
+function buildAreaPath(
+  values: number[],
+  maxY: number,
+  w: number,
+  h: number,
+): string {
   const n = values.length;
   const stepX = w / (n - 1);
   const points = values.map((v, i) => `${i * stepX},${h - (v / maxY) * h}`);
@@ -114,12 +119,12 @@ export default function HomePage() {
           Open source &amp; free
         </div>
         <h1 className="max-w-3xl text-5xl font-bold leading-tight tracking-tight text-gray-900 md:text-6xl">
-          See which AI agents are reading your website
+          Web Analytics for AI Agents
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-gray-500">
-          Agent Analytics monitors when AI crawlers like ChatGPT, Claude, and
-          Perplexity visit your pages — so you can understand how AI is consuming
-          your content.
+          Agent Analytics monitors when AI agents from ChatGPT, Claude, and
+          Perplexity visit your pages — so you can understand how AI models are
+          consuming your content.
         </p>
         <Link
           href="/login"
@@ -156,7 +161,9 @@ export default function HomePage() {
                   className="rounded-lg border border-gray-200 bg-white px-3 py-2.5"
                 >
                   <p className="text-[9px] text-gray-400">{stat.label}</p>
-                  <p className="text-sm font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-sm font-bold text-gray-900">
+                    {stat.value}
+                  </p>
                 </div>
               ))}
             </div>
@@ -166,7 +173,11 @@ export default function HomePage() {
               <p className="mb-3 text-[10px] font-medium uppercase tracking-wider text-gray-400">
                 AI Agent Traffic Over Time
               </p>
-              <svg viewBox="0 0 500 120" className="w-full" preserveAspectRatio="none">
+              <svg
+                viewBox="0 0 500 120"
+                className="w-full"
+                preserveAspectRatio="none"
+              >
                 {[0.25, 0.5, 0.75].map((f) => (
                   <line
                     key={f}
@@ -194,8 +205,13 @@ export default function HomePage() {
                   { label: "Perplexity", color: "bg-violet-500" },
                   { label: "Google", color: "bg-blue-500" },
                 ].map((l) => (
-                  <span key={l.label} className="flex items-center gap-1.5 text-[10px] text-gray-400">
-                    <span className={`inline-block h-2 w-2 rounded-full ${l.color}`} />
+                  <span
+                    key={l.label}
+                    className="flex items-center gap-1.5 text-[10px] text-gray-400"
+                  >
+                    <span
+                      className={`inline-block h-2 w-2 rounded-full ${l.color}`}
+                    />
                     {l.label}
                   </span>
                 ))}
@@ -237,7 +253,10 @@ export default function HomePage() {
                 </p>
                 <div className="space-y-1.5">
                   {MOCK_PAGES.map((p) => (
-                    <div key={p.path} className="flex items-center justify-between">
+                    <div
+                      key={p.path}
+                      className="flex items-center justify-between"
+                    >
                       <span className="truncate font-mono text-[10px] text-gray-600">
                         {p.path === "/" ? "/" : p.path}
                       </span>
@@ -257,18 +276,30 @@ export default function HomePage() {
       <section className="border-t border-gray-200 py-24">
         <div className="mx-auto max-w-3xl px-6">
           <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
-            Website traffic is dropping.<br />
+            Website traffic is dropping.
+            <br />
             <span className="text-gray-400">AI traffic is replacing it.</span>
           </h2>
           <div className="space-y-4 text-lg leading-relaxed text-gray-500">
             <p>
-              Today, people ask AI chatbots like ChatGPT instead of searching the web. When they do, the AI searches the web on their behalf, reads the relevant websites, and answers the person directly — they never visit your site.
+              Today, people ask AI chatbots like ChatGPT instead of searching
+              the web. When they do, the AI searches the web on their behalf,
+              reads the relevant websites, and answers the person directly —
+              they never visit your site.
             </p>
             <p>
-              In these cases, your website still delivered an impression. The AI read it. But traditional analytics tools like Google Analytics can&apos;t see AI agent visits, so most companies have no idea this is happening.
+              In these cases, your website still delivered an impression. The AI
+              read it. But traditional analytics tools like Google Analytics
+              can&apos;t see AI agent visits, so most companies have no idea
+              this is happening.
             </p>
             <p>
-              <span className="font-medium text-gray-900">Agent Analytics makes this traffic visible.</span> Connect your hosting provider and see which AI models are visiting your site, which pages they&apos;re reading, how often, and how it&apos;s changing over time.
+              <span className="font-medium text-gray-900">
+                Agent Analytics makes this traffic visible.
+              </span>{" "}
+              Connect your hosting provider and see which AI models are visiting
+              your site, which pages they&apos;re reading, how often, and how
+              it&apos;s changing over time.
             </p>
           </div>
         </div>
@@ -490,11 +521,17 @@ export default function HomePage() {
             </a>
           </p>
           <div className="mt-4 flex items-center justify-center gap-4 text-xs text-gray-400">
-            <Link href="/legal/terms-of-service" className="underline hover:text-gray-600">
+            <Link
+              href="/legal/terms-of-service"
+              className="underline hover:text-gray-600"
+            >
               Terms of Service
             </Link>
             <span>·</span>
-            <Link href="/legal/privacy-policy" className="underline hover:text-gray-600">
+            <Link
+              href="/legal/privacy-policy"
+              className="underline hover:text-gray-600"
+            >
               Privacy Policy
             </Link>
           </div>
