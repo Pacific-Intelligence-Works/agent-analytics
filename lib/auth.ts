@@ -8,6 +8,7 @@ import {
   sessions,
   verificationTokens,
 } from "@/lib/db/schema";
+import { isBlockedDomain, isAdditionalBlockedDomain } from "@/lib/blocked-domains";
 
 const emailFrom = process.env.EMAIL_FROM || "Agent Analytics <support@analytics.unusual.ai>";
 
@@ -62,6 +63,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     strategy: "database",
   },
   callbacks: {
+    async signIn({ user }) {
+      if (user.email && isBlockedDomain(user.email)) {
+        if (isAdditionalBlockedDomain(user.email)) {
+          const { Resend: ResendClient } = await import("resend");
+          const resend = new ResendClient(process.env.RESEND_API_KEY);
+          await resend.emails.send({
+            from: emailFrom,
+            to: "support@unusual.ai",
+            subject: "Blocked signup attempt",
+            html: `<p>Blocked signup attempt: <strong>${user.email}</strong></p>`,
+          }).catch(() => {});
+        }
+        return false;
+      }
+      // Notify on every successful signup
+      const { Resend: ResendClient } = await import("resend");
+      const resend = new ResendClient(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: emailFrom,
+        to: "support@unusual.ai",
+        subject: "New Agent Analytics signup",
+        html: `<p>New user signed up: <strong>${user.email}</strong></p>`,
+      }).catch(() => {});
+      return true;
+    },
     async session({ session, user }) {
       session.user.id = user.id;
       return session;

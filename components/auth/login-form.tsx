@@ -7,10 +7,26 @@ import { Mail } from "lucide-react";
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    try {
+      const res = await fetch("/api/check-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (data.blocked) {
+        setError(data.reason);
+        setIsLoading(false);
+        return;
+      }
+    } catch {
+      // If check fails, let NextAuth handle it
+    }
     await signIn("resend", { email, callbackUrl: "/dashboard" });
   };
 
@@ -31,11 +47,17 @@ export function LoginForm() {
             type="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setError("");
+            }}
             placeholder="you@company.com"
             className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-gray-900 placeholder-gray-400 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600"
           />
         </div>
+        {error && (
+          <p className="mt-2 text-sm text-red-600">{error}</p>
+        )}
       </div>
       <button
         type="submit"
