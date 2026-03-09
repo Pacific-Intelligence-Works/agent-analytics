@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { accounts, connections } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { encrypt } from "@/lib/encryption";
+import { canAccessAccount } from "@/lib/db/queries";
 
 export async function POST(
   request: Request,
@@ -16,15 +17,12 @@ export async function POST(
 
   const { accountId } = await params;
 
-  // Verify user owns this account
-  const [account] = await db
-    .select()
-    .from(accounts)
-    .where(
-      and(eq(accounts.id, accountId), eq(accounts.userId, session.user.id))
-    );
-  if (!account) {
+  const access = await canAccessAccount(accountId, session.user.id);
+  if (!access.hasAccess) {
     return NextResponse.json({ error: "Account not found" }, { status: 404 });
+  }
+  if (!access.isOwner) {
+    return NextResponse.json({ error: "Only the account owner can modify the connection" }, { status: 403 });
   }
 
   const body = await request.json();
@@ -77,15 +75,12 @@ export async function DELETE(
 
   const { accountId } = await params;
 
-  // Verify user owns this account
-  const [account] = await db
-    .select()
-    .from(accounts)
-    .where(
-      and(eq(accounts.id, accountId), eq(accounts.userId, session.user.id))
-    );
-  if (!account) {
+  const access = await canAccessAccount(accountId, session.user.id);
+  if (!access.hasAccess) {
     return NextResponse.json({ error: "Account not found" }, { status: 404 });
+  }
+  if (!access.isOwner) {
+    return NextResponse.json({ error: "Only the account owner can modify the connection" }, { status: 403 });
   }
 
   await db.delete(connections).where(eq(connections.accountId, accountId));

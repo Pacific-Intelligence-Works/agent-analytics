@@ -1,8 +1,6 @@
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { accounts } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { getUserAccessibleAccounts } from "@/lib/db/queries";
 import { DomainForm } from "@/components/setup/domain-form";
 import { Globe } from "lucide-react";
 
@@ -10,11 +8,7 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const userAccounts = await db
-    .select()
-    .from(accounts)
-    .where(eq(accounts.userId, session.user.id))
-    .limit(1);
+  const userAccounts = await getUserAccessibleAccounts(session.user.id);
 
   if (userAccounts.length > 0) {
     redirect(`/dashboard/${userAccounts[0].id}`);

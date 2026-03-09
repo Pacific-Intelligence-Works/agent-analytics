@@ -1,11 +1,12 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { accounts } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { detectCloudflare } from "@/lib/cloudflare/detect";
 import { SetupShell } from "@/components/setup/setup-shell";
 import { CheckResult } from "./check-result";
+import { canAccessAccount } from "@/lib/db/queries";
 
 export default async function SetupCheckPage({
   params,
@@ -17,12 +18,13 @@ export default async function SetupCheckPage({
 
   const { accountId } = await params;
 
+  const access = await canAccessAccount(accountId, session.user.id);
+  if (!access.hasAccess) redirect("/dashboard");
+
   const [account] = await db
     .select()
     .from(accounts)
-    .where(
-      and(eq(accounts.id, accountId), eq(accounts.userId, session.user.id))
-    );
+    .where(eq(accounts.id, accountId));
   if (!account) redirect("/dashboard");
 
   const result = await detectCloudflare(account.domain);

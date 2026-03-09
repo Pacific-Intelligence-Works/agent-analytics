@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { accounts } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
-import { getAllSnapshotsForExport } from "@/lib/db/queries";
+import { eq } from "drizzle-orm";
+import { getAllSnapshotsForExport, canAccessAccount } from "@/lib/db/queries";
 
 export async function GET(
   request: Request,
@@ -16,13 +16,15 @@ export async function GET(
 
   const { accountId } = await params;
 
-  // Verify user owns this account
+  const access = await canAccessAccount(accountId, session.user.id);
+  if (!access.hasAccess) {
+    return NextResponse.json({ error: "Account not found" }, { status: 404 });
+  }
+
   const [account] = await db
     .select()
     .from(accounts)
-    .where(
-      and(eq(accounts.id, accountId), eq(accounts.userId, session.user.id))
-    );
+    .where(eq(accounts.id, accountId));
   if (!account) {
     return NextResponse.json({ error: "Account not found" }, { status: 404 });
   }

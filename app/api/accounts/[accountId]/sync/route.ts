@@ -1,8 +1,6 @@
 import { NextResponse, after } from "next/server";
 import { auth } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { accounts } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { canAccessAccount } from "@/lib/db/queries";
 import { syncAccount } from "@/lib/cloudflare/sync";
 
 // Allow up to 5 minutes for background sync on Vercel Pro
@@ -19,14 +17,8 @@ export async function POST(
 
   const { accountId } = await params;
 
-  // Verify user owns this account
-  const [account] = await db
-    .select()
-    .from(accounts)
-    .where(
-      and(eq(accounts.id, accountId), eq(accounts.userId, session.user.id))
-    );
-  if (!account) {
+  const access = await canAccessAccount(accountId, session.user.id);
+  if (!access.hasAccess) {
     return NextResponse.json({ error: "Account not found" }, { status: 404 });
   }
 

@@ -167,6 +167,26 @@ export const devInvites = pgTable("dev_invites", {
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
 });
 
+export const accountMembers = pgTable(
+  "account_members",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    accountId: uuid("account_id")
+      .notNull()
+      .references(() => accounts.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    role: text("role", { enum: ["viewer", "admin"] })
+      .default("viewer")
+      .notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("account_members_unique").on(table.accountId, table.userId),
+  ]
+);
+
 export const unsupportedProviderRequests = pgTable(
   "unsupported_provider_requests",
   {
@@ -195,6 +215,7 @@ export const accountsRelations = relations(accounts, ({ one, many }) => ({
   crawlerSnapshots: many(crawlerSnapshots),
   crawlerPaths: many(crawlerPaths),
   devInvites: many(devInvites),
+  members: many(accountMembers),
 }));
 
 export const connectionsRelations = relations(connections, ({ one }) => ({
@@ -227,3 +248,17 @@ export const devInvitesRelations = relations(devInvites, ({ one }) => ({
     references: [accounts.id],
   }),
 }));
+
+export const accountMembersRelations = relations(
+  accountMembers,
+  ({ one }) => ({
+    account: one(accounts, {
+      fields: [accountMembers.accountId],
+      references: [accounts.id],
+    }),
+    user: one(users, {
+      fields: [accountMembers.userId],
+      references: [users.id],
+    }),
+  })
+);

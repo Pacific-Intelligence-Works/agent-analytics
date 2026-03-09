@@ -1,8 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
-import { accounts } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { getUserAccessibleAccounts } from "@/lib/db/queries";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { Monitor } from "lucide-react";
 
@@ -17,14 +15,7 @@ export default async function DashboardLayout({
   }
 
   const userAccounts = session.user.id
-    ? await db
-        .select({
-          id: accounts.id,
-          domain: accounts.domain,
-          status: accounts.status,
-        })
-        .from(accounts)
-        .where(eq(accounts.userId, session.user.id))
+    ? await getUserAccessibleAccounts(session.user.id)
     : [];
 
   return (

@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { accounts } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+import { canAccessAccount } from "@/lib/db/queries";
 
 export async function DELETE(
   _request: Request,
@@ -15,14 +16,12 @@ export async function DELETE(
 
   const { accountId } = await params;
 
-  const [account] = await db
-    .select()
-    .from(accounts)
-    .where(
-      and(eq(accounts.id, accountId), eq(accounts.userId, session.user.id))
-    );
-  if (!account) {
+  const access = await canAccessAccount(accountId, session.user.id);
+  if (!access.hasAccess) {
     return NextResponse.json({ error: "Account not found" }, { status: 404 });
+  }
+  if (!access.isOwner) {
+    return NextResponse.json({ error: "Only the account owner can delete this account" }, { status: 403 });
   }
 
   // Cascade deletes connections, snapshots, paths, and invites

@@ -4,11 +4,63 @@ import {
   connections,
   crawlerSnapshots,
   crawlerPaths,
+  accountMembers,
 } from "@/lib/db/schema";
-import { eq, and, gte, desc, sql, inArray } from "drizzle-orm";
+import { eq, and, gte, desc, sql, inArray, or } from "drizzle-orm";
 
 function daysAgoStr(days: number): string {
   return new Date(Date.now() - days * 86400000).toISOString().split("T")[0];
+}
+
+/** Check if a user can access an account (owner or member) */
+export async function canAccessAccount(
+  accountId: string,
+  userId: string
+): Promise<{ hasAccess: boolean; isOwner: boolean }> {
+  // Check ownership first
+  const [owned] = await db
+    .select({ id: accounts.id })
+    .from(accounts)
+    .where(and(eq(accounts.id, accountId), eq(accounts.userId, userId)));
+  if (owned) return { hasAccess: true, isOwner: true };
+
+  // Check membership
+  const [member] = await db
+    .select({ id: accountMembers.id })
+    .from(accountMembers)
+    .where(
+      and(
+        eq(accountMembers.accountId, accountId),
+        eq(accountMembers.userId, userId)
+      )
+    );
+  return { hasAccess: !!member, isOwner: false };
+}
+
+/** Get all accounts a user can access (owned + shared) */
+export async function getUserAccessibleAccounts(userId: string) {
+  const owned = await db
+    .select({
+      id: accounts.id,
+      domain: accounts.domain,
+      status: accounts.status,
+      isOwner: sql<boolean>`true`,
+    })
+    .from(accounts)
+    .where(eq(accounts.userId, userId));
+
+  const shared = await db
+    .select({
+      id: accounts.id,
+      domain: accounts.domain,
+      status: accounts.status,
+      isOwner: sql<boolean>`false`,
+    })
+    .from(accountMembers)
+    .innerJoin(accounts, eq(accounts.id, accountMembers.accountId))
+    .where(eq(accountMembers.userId, userId));
+
+  return [...owned, ...shared];
 }
 
 /** Fetch crawler snapshots for an account within a date range */
@@ -152,15 +204,18 @@ export async function getPathDetail(
     .orderBy(crawlerPaths.date);
 }
 
-/** Fetch an account with its connection, verifying user ownership */
+/** Fetch an account with its connection, verifying user has access (owner or member) */
 export async function getAccountWithConnection(
   accountId: string,
   userId: string
 ) {
+  const access = await canAccessAccount(accountId, userId);
+  if (!access.hasAccess) return null;
+
   const [account] = await db
     .select()
     .from(accounts)
-    .where(and(eq(accounts.id, accountId), eq(accounts.userId, userId)));
+    .where(eq(accounts.id, accountId));
 
   if (!account) return null;
 
@@ -172,7 +227,7 @@ export async function getAccountWithConnection(
     .from(connections)
     .where(eq(connections.accountId, accountId));
 
-  return { ...account, connection: connection || null };
+  return { ...account, isOwner: access.isOwner, connection: connection || null };
 }
 
 /** Fetch all snapshots for export (no date limit) */

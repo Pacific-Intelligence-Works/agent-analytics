@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import { Bot, LogOut, Plus, Globe } from "lucide-react";
+import { Bot, LogOut, Plus, Globe, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -9,6 +9,7 @@ interface Account {
   id: string;
   domain: string;
   status: string;
+  isOwner: boolean;
 }
 
 interface SidebarProps {
@@ -28,6 +29,31 @@ const STATUS_COLORS: Record<string, string> = {
 
 export function Sidebar({ user, accounts }: SidebarProps) {
   const pathname = usePathname();
+  const ownedAccounts = accounts.filter((a) => a.isOwner);
+  const sharedAccounts = accounts.filter((a) => !a.isOwner);
+
+  function AccountItem({ account }: { account: Account }) {
+    const isActive = pathname.startsWith(`/dashboard/${account.id}`);
+    return (
+      <li>
+        <Link
+          href={`/dashboard/${account.id}`}
+          className={`flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm transition-colors ${
+            isActive
+              ? "bg-gray-100 text-gray-900 font-medium"
+              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          }`}
+        >
+          <Globe className="h-4 w-4 shrink-0 text-gray-400" />
+          <span className="flex-1 truncate">{account.domain}</span>
+          <span
+            className={`h-2 w-2 shrink-0 rounded-full ${STATUS_COLORS[account.status] || "bg-gray-400"}`}
+            title={account.status}
+          />
+        </Link>
+      </li>
+    );
+  }
 
   return (
     <aside className="flex w-64 flex-col border-r border-gray-200 bg-white">
@@ -43,37 +69,16 @@ export function Sidebar({ user, accounts }: SidebarProps) {
 
       <nav className="flex-1 overflow-auto p-4">
         <div className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">
-          Domains
+          Your Domains
         </div>
 
-        {accounts.length === 0 ? (
+        {ownedAccounts.length === 0 ? (
           <p className="px-2 py-4 text-sm text-gray-400">No domains yet</p>
         ) : (
           <ul className="space-y-1">
-            {accounts.map((account) => {
-              const isActive = pathname.startsWith(
-                `/dashboard/${account.id}`
-              );
-              return (
-                <li key={account.id}>
-                  <Link
-                    href={`/dashboard/${account.id}`}
-                    className={`flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm transition-colors ${
-                      isActive
-                        ? "bg-gray-100 text-gray-900 font-medium"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                    }`}
-                  >
-                    <Globe className="h-4 w-4 shrink-0 text-gray-400" />
-                    <span className="flex-1 truncate">{account.domain}</span>
-                    <span
-                      className={`h-2 w-2 shrink-0 rounded-full ${STATUS_COLORS[account.status] || "bg-gray-400"}`}
-                      title={account.status}
-                    />
-                  </Link>
-                </li>
-              );
-            })}
+            {ownedAccounts.map((account) => (
+              <AccountItem key={account.id} account={account} />
+            ))}
           </ul>
         )}
 
@@ -84,6 +89,20 @@ export function Sidebar({ user, accounts }: SidebarProps) {
           <Plus className="h-4 w-4" />
           Add domain
         </Link>
+
+        {sharedAccounts.length > 0 && (
+          <>
+            <div className="mb-2 mt-6 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-gray-400">
+              <Users className="h-3 w-3" />
+              Shared with you
+            </div>
+            <ul className="space-y-1">
+              {sharedAccounts.map((account) => (
+                <AccountItem key={account.id} account={account} />
+              ))}
+            </ul>
+          </>
+        )}
       </nav>
 
       <div className="border-t border-gray-200 p-4">

@@ -71,7 +71,7 @@ export default async function AccountDashboardPage({
               AI agent traffic — last {days} days
             </p>
           </div>
-          <DashboardActions accountId={accountId} days={days} />
+          <DashboardActions accountId={accountId} days={days} isOwner={account.isOwner} />
         </div>
 
         {/* Sync error banner */}
