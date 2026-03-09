@@ -7,6 +7,7 @@ interface SetupShellProps {
   title: string;
   accountId: string;
   backHref?: string;
+  backAction?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -15,6 +16,7 @@ export function SetupShell({
   totalSteps,
   title,
   backHref,
+  backAction,
   children,
 }: SetupShellProps) {
   return (
@@ -22,7 +24,9 @@ export function SetupShell({
       {/* Progress indicator */}
       <div className="mb-8">
         <div className="mb-4 flex items-center justify-between">
-          {backHref ? (
+          {backAction ? (
+            backAction
+          ) : backHref ? (
             <Link
               href={backHref}
               className="flex items-center gap-1 text-sm text-gray-500 transition-colors hover:text-gray-900"

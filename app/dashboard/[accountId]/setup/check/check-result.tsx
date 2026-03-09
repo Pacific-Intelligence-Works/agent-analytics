@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { XCircle, ArrowRight, Mail, Loader2, RotateCcw, Info, X } from "lucide-react";
+import { XCircle, ArrowRight, Mail, Loader2, Info, X } from "lucide-react";
 
 interface CheckResultProps {
   domain: string;
@@ -18,24 +17,12 @@ export function CheckResult({
   method,
   accountId,
 }: CheckResultProps) {
-  const router = useRouter();
   const [showInviteForm, setShowInviteForm] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [devEmail, setDevEmail] = useState("");
   const [inviteLoading, setInviteLoading] = useState(false);
   const [inviteSent, setInviteSent] = useState(false);
   const [inviteError, setInviteError] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  async function handleTryDifferentDomain() {
-    setIsDeleting(true);
-    try {
-      await fetch(`/api/accounts/${accountId}`, { method: "DELETE" });
-      router.push("/dashboard");
-    } catch {
-      setIsDeleting(false);
-    }
-  }
 
   async function handleSendInvite(e: React.FormEvent) {
     e.preventDefault();
@@ -226,14 +213,6 @@ export function CheckResult({
               </>
             )}
           </div>
-          <button
-            onClick={handleTryDifferentDomain}
-            disabled={isDeleting}
-            className="flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-gray-600"
-          >
-            <RotateCcw className="h-3.5 w-3.5" />
-            {isDeleting ? "Removing..." : "Try a different domain"}
-          </button>
         </div>
       )}
     </div>

@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { detectCloudflare } from "@/lib/cloudflare/detect";
 import { SetupShell } from "@/components/setup/setup-shell";
 import { CheckResult } from "./check-result";
+import { BackButton } from "./back-button";
 import { canAccessAccount } from "@/lib/db/queries";
 
 export default async function SetupCheckPage({
@@ -35,7 +36,7 @@ export default async function SetupCheckPage({
       totalSteps={4}
       title="Setup Agent Analytics"
       accountId={accountId}
-      backHref="/dashboard"
+      backAction={<BackButton accountId={accountId} />}
     >
       <CheckResult
         domain={account.domain}
