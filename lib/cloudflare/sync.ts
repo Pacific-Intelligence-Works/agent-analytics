@@ -35,6 +35,13 @@ function advanceOneHour(isoStr: string): string {
   return toISOStr(d);
 }
 
+/** Parse a CF "cannot request data older than Xs" error and return max seconds, or null */
+function parseMaxAgeSeconds(errorMsg: string): number | null {
+  const match = errorMsg.match(/cannot request data older than (\d+)s/);
+  if (!match) return null;
+  return parseInt(match[1], 10);
+}
+
 /** Build the date range, capping at Cloudflare's retention limit */
 function getDateRange(lookbackDays: number): { start: string; end: string } {
   const capped = Math.min(lookbackDays, MAX_LOOKBACK_DAYS);
@@ -218,13 +225,30 @@ export async function syncAccount(
     const apiToken = decrypt(connection.apiTokenEnc);
 
     // 3. Fetch all data with pagination
-    const { start, end } = getDateRange(lookbackDays);
-    const allRows = await fetchAll(
-      apiToken,
-      connection.zoneId,
-      start,
-      end
-    );
+    //    Some CF zones (Free/Pro plans) limit how far back you can query.
+    //    If we hit that limit, parse the max age and retry with a capped range.
+    let allRows: CfRow[];
+    try {
+      const { start, end } = getDateRange(lookbackDays);
+      allRows = await fetchAll(apiToken, connection.zoneId, start, end);
+    } catch (fetchErr) {
+      const msg = fetchErr instanceof Error ? fetchErr.message : "";
+      const maxSeconds = parseMaxAgeSeconds(msg);
+      if (maxSeconds && maxSeconds > 0) {
+        const cappedDays = Math.floor(maxSeconds / 86400) - 1; // 1-day buffer
+        if (cappedDays > 0 && cappedDays < lookbackDays) {
+          console.log(
+            `Zone ${connection.zoneId} limits queries to ${maxSeconds}s (~${cappedDays}d), retrying`
+          );
+          const { start, end } = getDateRange(cappedDays);
+          allRows = await fetchAll(apiToken, connection.zoneId, start, end);
+        } else {
+          throw fetchErr;
+        }
+      } else {
+        throw fetchErr;
+      }
+    }
 
     // 4. Classify and aggregate
     //    datetimeHour → date (YYYY-MM-DD) for storage
