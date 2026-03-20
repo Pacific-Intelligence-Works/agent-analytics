@@ -4,7 +4,7 @@
 
 Agent Analytics is an open-source dashboard that connects to Cloudflare's AI Crawl Control analytics and shows you exactly which AI bots are visiting your site, how often, and which pages they're reading. Built for marketers, SEOs, and content teams who want visibility into how AI is consuming their content.
 
-**[Start tracking for free at agentanalytics.unusual.ai](https://agentanalytics.unusual.ai)**
+**[Start tracking for free at analytics.unusual.ai](https://analytics.unusual.ai)**
 
 ## Features
 
