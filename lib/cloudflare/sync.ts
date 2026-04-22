@@ -15,8 +15,9 @@ const MAX_PATHS_PER_DATE = 50;
 const MAX_LOOKBACK_DAYS = 30;
 /** Cloudflare's max rows per query */
 const CF_PAGE_LIMIT = 10000;
-/** Max seconds per query window — some zones cap at 691200s (8 days) */
-const CF_MAX_WINDOW_SECONDS = 604800; // 7 days
+/** Default per-query window before discovery. Zones vary wildly here
+ *  — some cap at 1d, others at 8d+. We probe per-zone and adjust. */
+const CF_DEFAULT_WINDOW_SECONDS = 604800; // 7 days
 
 interface SyncResult {
   snapshotsUpserted: number;
@@ -35,28 +36,43 @@ function advanceOneHour(isoStr: string): string {
   return toISOStr(d);
 }
 
+const CF_UNIT_SECONDS: Record<string, number> = {
+  w: 604800,
+  d: 86400,
+  h: 3600,
+  m: 60,
+  s: 1,
+};
+
 /**
- * Parse a CF "cannot request data older than <duration>" error and return
- * max seconds, or null. Handles both compact-unit ("1w1d", "4w2d1h32m38s")
- * and plain-seconds ("604800s") formats — the latter is just a compact
- * duration with only the `s` unit, so the same parser covers both.
+ * Sum a CF compact-duration string (e.g. "1w1d", "4w2d1h32m38s", "604800s")
+ * into total seconds.
  */
+function sumCfDuration(compact: string): number {
+  let total = 0;
+  for (const [, value, unit] of compact.matchAll(/(\d+)([wdhms])/g)) {
+    total += parseInt(value, 10) * CF_UNIT_SECONDS[unit];
+  }
+  return total;
+}
+
+/** Parse a CF "cannot request data older than ..." retention error. */
 function parseMaxAgeSeconds(errorMsg: string): number | null {
-  const match = errorMsg.match(
+  const m = errorMsg.match(
     /cannot request data older than ((?:\d+[wdhms])+)/
   );
-  if (!match) return null;
-  const unitSeconds: Record<string, number> = {
-    w: 604800,
-    d: 86400,
-    h: 3600,
-    m: 60,
-    s: 1,
-  };
-  let total = 0;
-  for (const [, value, unit] of match[1].matchAll(/(\d+)([wdhms])/g)) {
-    total += parseInt(value, 10) * unitSeconds[unit];
-  }
+  if (!m) return null;
+  const total = sumCfDuration(m[1]);
+  return total > 0 ? total : null;
+}
+
+/** Parse a CF "cannot request a time range wider than ..." window error. */
+function parseMaxWindowSeconds(errorMsg: string): number | null {
+  const m = errorMsg.match(
+    /time range wider than ((?:\d+[wdhms])+)/
+  );
+  if (!m) return null;
+  const total = sumCfDuration(m[1]);
   return total > 0 ? total : null;
 }
 
@@ -88,43 +104,81 @@ function buildProbeQuery(
   }`;
 }
 
-/**
- * Discover how far back this zone actually allows queries. CF plans vary
- * (Free ~3d, Pro ~7d, Biz/Ent higher) and caps can be tightened per zone,
- * so we probe rather than assume. Returns days with a 1-day safety margin,
- * never less than 1.
- *
- * The probe uses a narrow 1-hour window at the farthest point back we
- * want to reach. This tests CF's *retention* limit (how old data can be)
- * without tripping its *per-query window* limit (how wide the time range
- * can be) — those are two separate constraints and we only care about
- * the former here, since `fetchAll` already chunks into 7-day windows.
- */
-async function discoverMaxLookbackDays(
+/** Run a probe query and return CF's error message, or null on success. */
+async function runProbe(
   apiToken: string,
   zoneId: string,
-  desiredDays: number
-): Promise<number> {
-  const capped = Math.min(desiredDays, MAX_LOOKBACK_DAYS);
-  const { start } = getDateRange(capped);
-  const probeEnd = toISOStr(new Date(new Date(start).getTime() + 3600_000));
+  start: string,
+  end: string
+): Promise<string | null> {
   const res = await fetch(CF_GRAPHQL, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ query: buildProbeQuery(zoneId, start, probeEnd) }),
+    body: JSON.stringify({ query: buildProbeQuery(zoneId, start, end) }),
   });
   const data = await res.json();
-  if (!data.errors?.length) return capped;
+  if (!data.errors?.length) return null;
+  return data.errors[0].message ?? "";
+}
 
-  const msg: string = data.errors[0].message ?? "";
-  const maxSeconds = parseMaxAgeSeconds(msg);
-  if (maxSeconds && maxSeconds > 0) {
-    return Math.max(1, Math.floor(maxSeconds / 86400) - 1);
+/**
+ * Discover two per-zone limits via cheap probe queries:
+ *   - `lookbackDays`: how far back the zone retains data (retention).
+ *   - `windowSeconds`: max span CF will accept in a single query (window).
+ * Both vary by CF plan and per-zone config. Each result has a safety
+ * margin so we don't flirt with the edge of the cap.
+ */
+async function discoverLimits(
+  apiToken: string,
+  zoneId: string,
+  desiredDays: number
+): Promise<{ lookbackDays: number; windowSeconds: number }> {
+  const cappedDays = Math.min(desiredDays, MAX_LOOKBACK_DAYS);
+
+  // Probe 1 — narrow 1h window at the farthest point back. Tests retention
+  // without tripping the window cap (1h fits in any sane window limit).
+  const { start: retStart } = getDateRange(cappedDays);
+  const retProbeEnd = toISOStr(
+    new Date(new Date(retStart).getTime() + 3600_000)
+  );
+  const retErr = await runProbe(apiToken, zoneId, retStart, retProbeEnd);
+
+  let lookbackDays: number;
+  if (!retErr) {
+    lookbackDays = cappedDays;
+  } else {
+    const maxSec = parseMaxAgeSeconds(retErr);
+    if (!maxSec) throw new Error(`CF GraphQL error: ${retErr}`);
+    lookbackDays = Math.max(1, Math.floor(maxSec / 86400) - 1);
   }
-  throw new Error(`CF GraphQL error: ${msg}`);
+
+  // Probe 2 — widest-we-want span ending at now. Tests window cap.
+  // Stay 1h inside retention on the start side so we don't collide with
+  // the retention limit here; that's what probe 1 is for.
+  const targetWindowSec = Math.min(
+    CF_DEFAULT_WINDOW_SECONDS,
+    lookbackDays * 86400 - 3600
+  );
+  const now = new Date();
+  const winProbeStart = toISOStr(
+    new Date(now.getTime() - targetWindowSec * 1000)
+  );
+  const winProbeEnd = toISOStr(now);
+  const winErr = await runProbe(apiToken, zoneId, winProbeStart, winProbeEnd);
+
+  let windowSeconds: number;
+  if (!winErr) {
+    windowSeconds = targetWindowSec;
+  } else {
+    const maxSec = parseMaxWindowSeconds(winErr);
+    if (!maxSec) throw new Error(`CF GraphQL error: ${winErr}`);
+    windowSeconds = Math.max(3600, maxSec - 3600); // 1h margin, min 1h
+  }
+
+  return { lookbackDays, windowSeconds };
 }
 
 /** Build the date range, capping at Cloudflare's retention limit */
@@ -218,10 +272,11 @@ async function fetchPage(
   return zones[0].httpRequestsAdaptiveGroups || [];
 }
 
-/** Split a date range into windows of CF_MAX_WINDOW_SECONDS */
+/** Split a date range into windows of up to `maxWindowSeconds`. */
 function chunkDateRange(
   start: string,
-  end: string
+  end: string,
+  maxWindowSeconds: number
 ): Array<{ start: string; end: string }> {
   const chunks: Array<{ start: string; end: string }> = [];
   let chunkStart = new Date(start);
@@ -230,7 +285,7 @@ function chunkDateRange(
   while (chunkStart < endDate) {
     const chunkEnd = new Date(
       Math.min(
-        chunkStart.getTime() + CF_MAX_WINDOW_SECONDS * 1000,
+        chunkStart.getTime() + maxWindowSeconds * 1000,
         endDate.getTime()
       )
     );
@@ -249,10 +304,11 @@ async function fetchAll(
   apiToken: string,
   zoneId: string,
   start: string,
-  end: string
+  end: string,
+  maxWindowSeconds: number
 ): Promise<CfRow[]> {
   const allRows: CfRow[] = [];
-  const windows = chunkDateRange(start, end);
+  const windows = chunkDateRange(start, end, maxWindowSeconds);
 
   for (const window of windows) {
     let cursor = window.start;
@@ -309,21 +365,31 @@ export async function syncAccount(
     // 2. Decrypt token
     const apiToken = decrypt(connection.apiTokenEnc);
 
-    // 3. Discover how far back this zone actually allows queries, then
-    //    fetch within that range. CF plans vary (Free ~3d, Pro ~7d, etc.)
-    //    and per-zone caps can be tightened, so we probe instead of assume.
-    const effectiveDays = await discoverMaxLookbackDays(
+    // 3. Discover retention + per-query window limits for this zone, then
+    //    fetch within them. Both vary by CF plan and per-zone config, so
+    //    we probe instead of assume.
+    const { lookbackDays: effectiveDays, windowSeconds } = await discoverLimits(
       apiToken,
       connection.zoneId,
       lookbackDays
     );
-    if (effectiveDays < lookbackDays) {
+    if (
+      effectiveDays < lookbackDays ||
+      windowSeconds < CF_DEFAULT_WINDOW_SECONDS
+    ) {
+      const windowHours = Math.floor(windowSeconds / 3600);
       console.log(
-        `Zone ${connection.zoneId} capped to ${effectiveDays}d (requested ${lookbackDays}d)`
+        `Zone ${connection.zoneId} capped: lookback=${effectiveDays}d (requested ${lookbackDays}d), window=${windowHours}h`
       );
     }
     const { start, end } = getDateRange(effectiveDays);
-    const allRows = await fetchAll(apiToken, connection.zoneId, start, end);
+    const allRows = await fetchAll(
+      apiToken,
+      connection.zoneId,
+      start,
+      end,
+      windowSeconds
+    );
 
     // 4. Classify and aggregate
     //    datetimeHour → date (YYYY-MM-DD) for storage
