@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import {
   getSnapshotsByAccount,
-  getPathsByAccount,
+  getAllPathsByAccount,
   getPathTimeSeries,
   getAccountWithConnection,
 } from "@/lib/db/queries";
@@ -39,7 +39,7 @@ export default async function AccountDashboardPage({
 
   const [snapshots, paths, pathTimeSeries] = await Promise.all([
     getSnapshotsByAccount(accountId, days),
-    getPathsByAccount(accountId, days, 20),
+    getAllPathsByAccount(accountId, days, 20),
     getPathTimeSeries(accountId, days, 20),
   ]);
 

@@ -46,7 +46,7 @@ export default function ApiTokenPage({
       backHref={`/dashboard/${accountId}/setup/zone-id`}
     >
       <div className="mb-6 flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
-        <Info className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+        <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand-600" />
         <div className="text-sm text-gray-500">
           <p className="mb-2 font-medium text-gray-700">
             Create a Cloudflare API token:
@@ -58,7 +58,7 @@ export default function ApiTokenPage({
                 href="https://dash.cloudflare.com/profile/api-tokens"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-emerald-600 underline hover:text-emerald-700"
+                className="font-mono text-brand-600 underline hover:text-brand-700"
               >
                 dash.cloudflare.com/profile/api-tokens
               </a>
@@ -111,7 +111,7 @@ export default function ApiTokenPage({
               setError("");
             }}
             placeholder="Paste your Cloudflare API token"
-            className="mb-2 w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 pr-10 font-mono text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+            className="mb-2 w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 pr-10 font-mono text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-brand-600 focus:ring-1 focus:ring-brand-600"
           />
           <button
             type="button"
@@ -135,7 +135,7 @@ export default function ApiTokenPage({
         <button
           type="submit"
           disabled={!apiToken.trim()}
-          className="mt-2 flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
+          className="mt-2 flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:opacity-50"
         >
           Continue
           <ArrowRight className="h-4 w-4" />

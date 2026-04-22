@@ -70,7 +70,7 @@ export function CheckResult({
         To get started, you&apos;ll need to connect your Cloudflare account.{" "}
         <button
           onClick={() => setShowInfoModal(true)}
-          className="inline-flex items-center gap-1 text-emerald-600 hover:text-emerald-700 underline underline-offset-2"
+          className="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700 underline underline-offset-2"
         >
           How does this work?
         </button>
@@ -87,7 +87,7 @@ export function CheckResult({
               <X className="h-5 w-5" />
             </button>
             <div className="mb-3 flex items-center gap-2">
-              <Info className="h-5 w-5 text-emerald-600" />
+              <Info className="h-5 w-5 text-brand-600" />
               <h3 className="text-base font-semibold text-gray-900">
                 How does Agent Analytics work?
               </h3>
@@ -114,7 +114,7 @@ export function CheckResult({
             </div>
             <button
               onClick={() => setShowInfoModal(false)}
-              className="mt-5 w-full rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
+              className="mt-5 w-full rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
             >
               Makes sense
             </button>
@@ -149,14 +149,14 @@ export function CheckResult({
                 value={devEmail}
                 onChange={(e) => setDevEmail(e.target.value)}
                 placeholder="dev@company.com"
-                className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-brand-600 focus:ring-1 focus:ring-brand-600"
                 disabled={inviteLoading}
               />
             </div>
             <button
               type="submit"
               disabled={inviteLoading || !devEmail.trim()}
-              className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
+              className="flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:opacity-50"
             >
               {inviteLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -182,7 +182,7 @@ export function CheckResult({
               <>
                 <Link
                   href={`/dashboard/${accountId}/setup/zone-id`}
-                  className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
                 >
                   Set this up myself
                   <ArrowRight className="h-4 w-4" />
@@ -205,7 +205,7 @@ export function CheckResult({
                 </Link>
                 <Link
                   href={`/dashboard/${accountId}/setup/zone-id`}
-                  className="flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
                 >
                   I use Cloudflare — continue
                   <ArrowRight className="h-4 w-4" />

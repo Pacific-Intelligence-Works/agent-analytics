@@ -39,7 +39,7 @@ export default function ZoneIdPage({
       backHref={`/dashboard/${accountId}/setup/check`}
     >
       <div className="mb-6 flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4">
-        <Info className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+        <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand-600" />
         <div className="text-sm text-gray-500">
           <p className="mb-2 font-medium text-gray-700">
             Where to find your Zone ID:
@@ -51,7 +51,7 @@ export default function ZoneIdPage({
                 href="https://dash.cloudflare.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-mono text-emerald-600 underline hover:text-emerald-700"
+                className="font-mono text-brand-600 underline hover:text-brand-700"
               >
                 dash.cloudflare.com
               </a>
@@ -85,14 +85,14 @@ export default function ZoneIdPage({
             setError("");
           }}
           placeholder="e.g. a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4"
-          className="mb-2 w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 font-mono text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+          className="mb-2 w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 font-mono text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-brand-600 focus:ring-1 focus:ring-brand-600"
         />
         {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
 
         <button
           type="submit"
           disabled={!zoneId.trim()}
-          className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-50"
+          className="mt-4 flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:opacity-50"
         >
           Continue
           <ArrowRight className="h-4 w-4" />

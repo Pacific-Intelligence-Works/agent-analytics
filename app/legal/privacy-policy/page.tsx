@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
       <nav className="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2">
-            <Bot className="h-5 w-5 text-emerald-600" />
+            <Bot className="h-5 w-5 text-brand-600" />
             <span className="font-semibold">Agent Analytics</span>
           </Link>
           <Link
@@ -36,7 +36,7 @@ export default function PrivacyPolicyPage() {
           when you use Agent Analytics, a free analytics tool available at analytics.unusual.ai
           (the &ldquo;<strong>Service</strong>&rdquo;). It also explains choices and rights you may
           have. This Policy is incorporated into our{" "}
-          <Link href="/legal/terms-of-service" className="text-emerald-600 hover:text-emerald-700">
+          <Link href="/legal/terms-of-service" className="text-brand-600 hover:text-brand-700">
             Terms of Service
           </Link>{" "}
           for Agent Analytics.

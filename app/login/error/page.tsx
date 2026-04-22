@@ -6,7 +6,7 @@ export default function AuthErrorPage() {
     <div className="flex min-h-screen items-center justify-center bg-white">
       <div className="w-full max-w-md space-y-6 px-4 text-center">
         <div className="mb-4 flex items-center justify-center gap-2">
-          <Bot className="h-7 w-7 text-emerald-600" />
+          <Bot className="h-7 w-7 text-brand-600" />
           <span className="text-2xl font-bold text-gray-900">Agent Analytics</span>
         </div>
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
@@ -20,7 +20,7 @@ export default function AuthErrorPage() {
         </p>
         <Link
           href="/login"
-          className="inline-block rounded-lg bg-emerald-600 px-6 py-2.5 font-medium text-white transition-colors hover:bg-emerald-700"
+          className="inline-block rounded-lg bg-brand-600 px-6 py-2.5 font-medium text-white transition-colors hover:bg-brand-700"
         >
           Back to login
         </Link>

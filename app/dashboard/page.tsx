@@ -18,7 +18,7 @@ export default async function DashboardPage() {
     <div className="flex h-full items-center justify-center">
       <div className="text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-          <Globe className="h-6 w-6 text-emerald-600" />
+          <Globe className="h-6 w-6 text-brand-600" />
         </div>
         <h2 className="text-xl font-semibold text-gray-900">
           Welcome to Agent Analytics

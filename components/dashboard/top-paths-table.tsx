@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { useAgentFilter } from "./agent-filter-provider";
 
 interface PathRow {
   path: string;
-  botName: string;
   totalRequests: number;
+  agentCount: number;
 }
 
 interface TopPathsTableProps {
@@ -21,11 +20,7 @@ function displayPath(path: string): string {
 }
 
 export function TopPathsTable({ paths, accountId, days }: TopPathsTableProps) {
-  const { disabledAgents } = useAgentFilter();
-
-  const filtered = paths.filter((p) => !disabledAgents.has(p.botName));
-
-  if (filtered.length === 0) {
+  if (paths.length === 0) {
     return (
       <div className="flex h-32 items-center justify-center rounded-xl border border-gray-200 bg-white">
         <p className="text-sm text-gray-400">No path data yet</p>
@@ -50,7 +45,7 @@ export function TopPathsTable({ paths, accountId, days }: TopPathsTableProps) {
         </h3>
         <Link
           href={`/dashboard/${accountId}/all-pages${daysParam}`}
-          className="flex items-center gap-1 text-xs font-medium text-emerald-600 transition-colors hover:text-emerald-500"
+          className="flex items-center gap-1 text-xs font-medium text-brand-600 transition-colors hover:text-brand-500"
         >
           View all
           <ArrowUpRight className="h-3 w-3" />
@@ -61,30 +56,30 @@ export function TopPathsTable({ paths, accountId, days }: TopPathsTableProps) {
           <thead className="sticky top-0 bg-white">
             <tr className="border-b border-gray-200 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
               <th className="px-4 py-3">Path</th>
-              <th className="px-4 py-3">Agent</th>
               <th className="px-4 py-3 text-right">Requests</th>
+              <th className="px-4 py-3 text-right">Agents</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {filtered.map((row, i) => (
+            {paths.map((row) => (
               <tr
-                key={`${row.path}-${row.botName}-${i}`}
+                key={row.path}
                 className="transition-colors hover:bg-gray-50"
               >
                 <td className="max-w-xs truncate px-4 py-3 font-mono text-sm">
                   <Link
                     href={detailHref(row.path)}
-                    className="text-emerald-600 hover:text-emerald-500"
+                    className="text-brand-600 hover:text-brand-500"
                     title={row.path}
                   >
                     {displayPath(row.path)}
                   </Link>
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-500">
-                  {row.botName}
-                </td>
                 <td className="whitespace-nowrap px-4 py-3 text-right text-sm font-medium text-gray-900">
                   {row.totalRequests.toLocaleString()}
+                </td>
+                <td className="whitespace-nowrap px-4 py-3 text-right text-sm text-gray-500">
+                  {row.agentCount}
                 </td>
               </tr>
             ))}

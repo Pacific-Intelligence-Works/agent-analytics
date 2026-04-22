@@ -58,7 +58,7 @@ export function Sidebar({ user, accounts }: SidebarProps) {
   return (
     <aside className="flex w-64 flex-col border-r border-gray-200 bg-white">
       <div className="flex h-16 items-center gap-2 border-b border-gray-200 px-4">
-        <Bot className="h-6 w-6 text-emerald-600" />
+        <Bot className="h-6 w-6 text-brand-600" />
         <div className="leading-tight">
           <span className="text-lg font-semibold text-gray-900">
             Agent Analytics

@@ -12,7 +12,7 @@ export default function TermsOfServicePage() {
       <nav className="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-2">
-            <Bot className="h-5 w-5 text-emerald-600" />
+            <Bot className="h-5 w-5 text-brand-600" />
             <span className="font-semibold">Agent Analytics</span>
           </Link>
           <Link
@@ -231,7 +231,7 @@ export default function TermsOfServicePage() {
         <h2>8) Privacy</h2>
         <p>
           Our{" "}
-          <Link href="/legal/privacy-policy" className="text-emerald-600 hover:text-emerald-700">
+          <Link href="/legal/privacy-policy" className="text-brand-600 hover:text-brand-700">
             Privacy Policy
           </Link>{" "}
           describes how we handle personal information in connection with the Service and is

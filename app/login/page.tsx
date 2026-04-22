@@ -14,7 +14,7 @@ export default async function LoginPage() {
       <div className="w-full max-w-md space-y-8 px-4">
         <div className="text-center">
           <div className="mb-4 flex items-center justify-center gap-2">
-            <Bot className="h-7 w-7 text-emerald-600" />
+            <Bot className="h-7 w-7 text-brand-600" />
             <h1 className="text-3xl font-bold text-gray-900">
               Agent Analytics
             </h1>

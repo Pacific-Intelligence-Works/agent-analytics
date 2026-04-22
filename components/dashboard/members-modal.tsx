@@ -225,7 +225,7 @@ export function MembersModal({ open, onClose, accountId }: MembersModalProps) {
                     <p className="mt-2 text-sm text-red-600">{error}</p>
                   )}
                   {success && (
-                    <p className="mt-2 text-sm text-emerald-600">{success}</p>
+                    <p className="mt-2 text-sm text-brand-600">{success}</p>
                   )}
                 </form>
               )}

@@ -9,9 +9,16 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand: #059669;       /* emerald-600 */
-  --color-brand-hover: #047857; /* emerald-700 */
-  --color-brand-muted: #065f46; /* emerald-800 */
+  --color-brand-50: #fef1ee;
+  --color-brand-100: #fcd9d2;
+  --color-brand-200: #f3b1a7;
+  --color-brand-300: #e28879;
+  --color-brand-400: #d67060;
+  --color-brand-500: #cd584b;
+  --color-brand-600: #b04436;
+  --color-brand-700: #8e372c;
+  --color-brand-800: #6b2a21;
+  --color-brand-900: #522018;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

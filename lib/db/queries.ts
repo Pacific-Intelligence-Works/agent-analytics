@@ -12,6 +12,19 @@ function daysAgoStr(days: number): string {
   return new Date(Date.now() - days * 86400000).toISOString().split("T")[0];
 }
 
+/**
+ * Extensions we treat as static assets (JS, CSS, images, fonts, media) and
+ * hide from the "crawled pages" views — AI bots pull these too, but they're
+ * noise for site owners who want to see which real pages got crawled.
+ */
+const ASSET_EXT_PATTERN =
+  "\\.(png|jpe?g|gif|svg|ico|webp|avif|bmp|tiff?|woff2?|ttf|otf|eot|css|js|mjs|map|mp4|webm|ogg|mp3|wav|flac|webmanifest)/?$";
+
+/** SQL predicate: true when crawler_paths.path is NOT a static asset */
+function excludeAssets() {
+  return sql`${crawlerPaths.path} !~* ${ASSET_EXT_PATTERN}`;
+}
+
 /** Check if a user can access an account (owner or member) */
 export async function canAccessAccount(
   accountId: string,
@@ -87,35 +100,12 @@ export async function getSnapshotsByAccount(
     .orderBy(crawlerSnapshots.date);
 }
 
-/** Fetch top crawled paths for an account, aggregated across dates */
-export async function getPathsByAccount(
-  accountId: string,
-  days: number = 7,
-  limit: number = 20
-) {
-  return db
-    .select({
-      path: crawlerPaths.path,
-      botName: crawlerPaths.botName,
-      totalRequests: sql<number>`sum(${crawlerPaths.requestCount})::int`,
-    })
-    .from(crawlerPaths)
-    .where(
-      and(
-        eq(crawlerPaths.accountId, accountId),
-        gte(crawlerPaths.date, daysAgoStr(days))
-      )
-    )
-    .groupBy(crawlerPaths.path, crawlerPaths.botName)
-    .orderBy(desc(sql`sum(${crawlerPaths.requestCount})`))
-    .limit(limit);
-}
-
 /** Fetch path time series — per-day request counts for top N paths */
 export async function getPathTimeSeries(
   accountId: string,
   days: number = 7,
-  limit: number = 20
+  limit: number = 20,
+  includeAssets = false
 ) {
   // First get top paths by total volume
   const topPaths = await db
@@ -127,7 +117,8 @@ export async function getPathTimeSeries(
     .where(
       and(
         eq(crawlerPaths.accountId, accountId),
-        gte(crawlerPaths.date, daysAgoStr(days))
+        gte(crawlerPaths.date, daysAgoStr(days)),
+        includeAssets ? undefined : excludeAssets()
       )
     )
     .groupBy(crawlerPaths.path)
@@ -162,9 +153,11 @@ export async function getPathTimeSeries(
 /** Fetch all crawled paths for an account, aggregated across dates and agents */
 export async function getAllPathsByAccount(
   accountId: string,
-  days: number = 7
+  days: number = 7,
+  limit?: number,
+  includeAssets = false
 ) {
-  return db
+  const q = db
     .select({
       path: crawlerPaths.path,
       totalRequests: sql<number>`sum(${crawlerPaths.requestCount})::int`,
@@ -174,11 +167,13 @@ export async function getAllPathsByAccount(
     .where(
       and(
         eq(crawlerPaths.accountId, accountId),
-        gte(crawlerPaths.date, daysAgoStr(days))
+        gte(crawlerPaths.date, daysAgoStr(days)),
+        includeAssets ? undefined : excludeAssets()
       )
     )
     .groupBy(crawlerPaths.path)
     .orderBy(desc(sql`sum(${crawlerPaths.requestCount})`));
+  return limit ? q.limit(limit) : q;
 }
 
 /** Fetch crawl detail for a specific path — per-day, per-agent breakdown */

@@ -101,7 +101,7 @@ export default function HomePage() {
       <nav className="fixed top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
           <div className="flex items-center gap-2">
-            <Bot className="h-5 w-5 text-emerald-600" />
+            <Bot className="h-5 w-5 text-brand-600" />
             <span className="font-semibold">Agent Analytics</span>
           </div>
           <Link
@@ -115,7 +115,7 @@ export default function HomePage() {
 
       {/* Hero */}
       <section className="flex flex-col items-center px-6 pb-24 pt-32 text-center">
-        <div className="mb-6 inline-flex items-center rounded-full border border-gray-300 px-4 py-1.5 text-sm font-medium text-emerald-600">
+        <div className="mb-6 inline-flex items-center rounded-full border border-gray-300 px-4 py-1.5 text-sm font-medium text-brand-600">
           Open source &amp; free
         </div>
         <h1 className="max-w-3xl text-5xl font-bold leading-tight tracking-tight text-gray-900 md:text-6xl">
@@ -200,7 +200,7 @@ export default function HomePage() {
               </svg>
               <div className="mt-2.5 flex gap-4">
                 {[
-                  { label: "OpenAI", color: "bg-emerald-500" },
+                  { label: "OpenAI", color: "bg-brand-500" },
                   { label: "Anthropic", color: "bg-amber-500" },
                   { label: "Perplexity", color: "bg-violet-500" },
                   { label: "Google", color: "bg-blue-500" },
@@ -339,7 +339,7 @@ export default function HomePage() {
                 key={f.title}
                 className="rounded-xl border border-gray-200 bg-white p-6"
               >
-                <f.icon className="mb-4 h-8 w-8 text-emerald-600" />
+                <f.icon className="mb-4 h-8 w-8 text-brand-600" />
                 <h3 className="mb-2 text-lg font-semibold text-gray-900">
                   {f.title}
                 </h3>
@@ -413,7 +413,7 @@ export default function HomePage() {
               </div>
               <div className="mt-4 flex items-center gap-4">
                 <span className="flex items-center gap-1.5 text-[11px] text-gray-500">
-                  <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
+                  <span className="inline-block h-2 w-2 rounded-full bg-brand-500" />
                   OpenAI
                 </span>
                 <span className="flex items-center gap-1.5 text-[11px] text-gray-500">
